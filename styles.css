@@ -132,3 +132,15 @@ ol.hint li { margin-bottom: 4px; }
 .preview-item .p-title { font-weight: 500; }
 .preview-item .p-meta { color: var(--muted); font-size: 11px; }
 .preview-item .p-del { background: none; border: 0; color: #a33; cursor: pointer; font-size: 15px; padding: 0 4px; }
+
+/* Asistente paso a paso de importación UCLM */
+.import-step { display: flex; flex-direction: column; gap: 14px; }
+.sub-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.sub-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--sand); background: var(--white); font-size: 13px; cursor: pointer; user-select: none; }
+.sub-pill input { margin: 0; cursor: pointer; }
+.sub-pill.checked { background: #e8ede0; border-color: var(--olive); color: var(--ink); font-weight: 500; }
+.btn-toggle-group { display: flex; gap: 8px; margin: 6px 0; }
+.btn-toggle-group button { border: 1px solid var(--sand); background: var(--white); border-radius: 8px; padding: 6px 12px; font-size: 12px; }
+.btn-toggle-group button.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.config-box { background: #faf7f0; border: 1px solid var(--sand); border-radius: 10px; padding: 12px; font-size: 13px; }
+.config-box h4 { margin: 0 0 8px; font-size: 13px; color: var(--navy); }

@@ -62,44 +62,78 @@
     </form>
   </div>
 
-  <!-- Diálogo Importar Horario PDF -->
+  <!-- Diálogo Importar Horario PDF UCLM Adaptable -->
   <dialog id="importDlg" class="wide-dialog">
     <div class="dlg-content">
-      <h2>Importar Horario de la Universidad</h2>
-      <p class="hint">Sube el PDF oficial de tu horario o calendario de exámenes. La app detectará automáticamente las clases, prácticas, exámenes y horas.</p>
+      <h2>Subir Horario / Exámenes (UCLM)</h2>
+      <p class="hint">Sube el PDF de tu curso o el calendario de exámenes. Podrás elegir exactamente qué asignaturas cursas, si quieres prácticas o no, y tu grupo.</p>
 
+      <!-- Zona de subida -->
       <div class="upload-zone" id="dropZone">
         <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none">
         <div class="upload-prompt" id="uploadPrompt">
-          <span class="upload-icon">📂</span>
-          <p><b>Arrastra tu PDF aquí</b> o <button type="button" class="link-btn" id="browseBtn">selecciona un archivo</button></p>
-          <small class="muted-text">Se procesa 100% en tu dispositivo</small>
+          <span class="upload-icon">📄</span>
+          <p><b>Arrastra tu PDF aquí</b> o <button type="button" class="link-btn" id="browseBtn">selecciona tu archivo</button></p>
+          <small class="muted-text">Detecta automáticamente asignaturas, prácticas G1/G2/G3, pruebas y exámenes</small>
         </div>
         <div id="parseProgress" class="parse-progress" style="display:none">
-          <p id="parseStatusText">Leyendo documento PDF...</p>
+          <p id="parseStatusText">Analizando semanas, asignaturas y fechas...</p>
         </div>
       </div>
 
-      <!-- Configuración de Grupos y Fechas -->
-      <div id="importOptions" style="display:none; margin-top:16px;">
-        <div class="row">
-          <label>Grupo / Subgrupo
-            <input type="text" id="groupFilter" placeholder="Ej: Grupo A, Grupo 1, G2 (o vacío para todo)">
-          </label>
-          <label>Semestre / Periodo
-            <select id="importPeriod">
-              <option value="current">Este cuatrimestre / semestre actual</option>
-              <option value="year">Todo el curso académico</option>
-            </select>
-          </label>
+      <!-- Paso 2: Filtros Inteligentes (Aparece tras analizar el PDF) -->
+      <div id="filterOptions" class="import-step" style="display:none; margin-top:16px;">
+        
+        <!-- Selección de Asignaturas Cursadas -->
+        <div class="config-box">
+          <h4>1. Asignaturas que cursas (marca solo las tuyas)</h4>
+          <div class="sub-tag-list" id="subjectFilterList"></div>
         </div>
+
+        <!-- Opción de Prácticas y Grupos -->
+        <div class="config-box">
+          <h4>2. Configuración de Prácticas y Grupos</h4>
+          <div class="row">
+            <label style="flex:1;">¿Quieres incluir las prácticas?
+              <select id="includePracticasSelect">
+                <option value="yes">Sí, incluir prácticas</option>
+                <option value="no">NO incluir prácticas (solo teoría/exámenes)</option>
+              </select>
+            </label>
+            <label id="groupSelectContainer" style="flex:1;">Tu subgrupo de prácticas:
+              <select id="groupPracticaSelect">
+                <option value="all">Todos los grupos</option>
+                <option value="G1">Grupo 1 (G1)</option>
+                <option value="G2">Grupo 2 (G2)</option>
+                <option value="G3">Grupo 3 (G3)</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <!-- Filtro por curso / color de examen (para PDFs de toda la carrera) -->
+        <div class="config-box" id="courseColorBox">
+          <h4>3. Curso académico / Color en el PDF</h4>
+          <div class="row">
+            <label style="flex:1;">Filtrar por curso si vienen varios:
+              <select id="courseLevelSelect">
+                <option value="auto">Detectar automáticamente (o todo)</option>
+                <option value="1">1º Curso</option>
+                <option value="2" selected>2º Curso</option>
+                <option value="3">3º Curso</option>
+                <option value="4">4º Curso</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Vista previa de eventos detectados -->
+      <!-- Vista previa -->
       <div id="previewArea" style="display:none; margin-top:16px;">
         <div class="preview-header">
-          <h3>Eventos detectados (<span id="detectedCount">0</span>)</h3>
-          <span class="muted-text">Revisa antes de confirmar</span>
+          <h3>Clases y citas detectadas (<span id="detectedCount">0</span>)</h3>
+          <span class="muted-text">Solo las asignaturas y grupos que has marcado</span>
         </div>
         <div class="preview-list" id="previewList"></div>
       </div>
@@ -107,7 +141,7 @@
       <div class="actions" style="margin-top:20px;">
         <button type="button" class="ghost" id="importCancel">Cancelar</button>
         <span class="grow"></span>
-        <button type="button" class="primary" id="importConfirm" style="display:none">Añadir a mi agenda</button>
+        <button type="button" class="primary" id="importConfirm" style="display:none">Guardar en mi agenda</button>
       </div>
     </div>
   </dialog>

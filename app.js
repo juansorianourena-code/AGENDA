@@ -285,7 +285,7 @@ function yearView() {
   return `<div class="y-grid">${months}</div>`;
 }
 
-/* ---------- Importador de Horario PDF ---------- */
+/* ---------- Importador de Horario UCLM Adaptativo ---------- */
 const importDlg = $('importDlg');
 const importBtn = $('importBtn');
 const dropZone = $('dropZone');
@@ -294,15 +294,26 @@ const browseBtn = $('browseBtn');
 const uploadPrompt = $('uploadPrompt');
 const parseProgress = $('parseProgress');
 const parseStatusText = $('parseStatusText');
-const importOptions = $('importOptions');
+const filterOptions = $('filterOptions');
+const subjectFilterList = $('subjectFilterList');
+const includePracticasSelect = $('includePracticasSelect');
+const groupPracticaSelect = $('groupPracticaSelect');
+const groupSelectContainer = $('groupSelectContainer');
+const courseLevelSelect = $('courseLevelSelect');
 const previewArea = $('previewArea');
 const previewList = $('previewList');
 const detectedCount = $('detectedCount');
 const importConfirm = $('importConfirm');
 const importCancel = $('importCancel');
-const groupFilterInput = $('groupFilter');
 
 let parsedEventsRaw = [];
+let detectedSubjects = new Set();
+let activeSelectedSubjects = new Set();
+
+const MONTHS_MAP = {
+  'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+  'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+};
 
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/legacy/build/pdf.worker.js';
@@ -310,9 +321,11 @@ if (window.pdfjsLib) {
 
 importBtn.onclick = () => {
   parsedEventsRaw = [];
+  detectedSubjects.clear();
+  activeSelectedSubjects.clear();
   previewList.innerHTML = '';
+  filterOptions.style.display = 'none';
   previewArea.style.display = 'none';
-  importOptions.style.display = 'none';
   importConfirm.style.display = 'none';
   uploadPrompt.style.display = 'block';
   parseProgress.style.display = 'none';
@@ -329,99 +342,132 @@ dropZone.ondragleave = () => dropZone.classList.remove('dragover');
 dropZone.ondrop = (e) => {
   e.preventDefault();
   dropZone.classList.remove('dragover');
-  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-    handlePdfFile(e.dataTransfer.files[0]);
-  }
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) handlePdfFile(e.dataTransfer.files[0]);
 };
-
 pdfFileInput.onchange = (e) => {
-  if (e.target.files && e.target.files[0]) {
-    handlePdfFile(e.target.files[0]);
-  }
+  if (e.target.files && e.target.files[0]) handlePdfFile(e.target.files[0]);
 };
 
-async function extractTextFromPDF(file) {
+// Parser espacial de tablas semanales de la UCLM
+async function parseUclmPdf(file) {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  const pagesText = [];
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
+  const events = [];
+  const subjects = new Set();
+
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
     const content = await page.getTextContent();
-    // Agrupar items por línea o concatenar ordenadamente
-    const strings = content.items.map(item => item.str);
-    pagesText.push(strings.join(' '));
-  }
-  return pagesText.join('\n');
-}
+    const items = content.items;
 
-function parseScheduleText(fullText) {
-  const results = [];
-  const lines = fullText.split(/\r?\n| {3,}/);
+    // Detectar curso académico si aparece en la cabecera (ej: 2026/2027)
+    let academicYear = 2026;
+    for (let it of items) {
+      const ym = it.str.match(/CURSO\s*(\d{4})\/(\d{4})/i);
+      if (ym) academicYear = parseInt(ym[1], 10);
+    }
 
-  // Días de la semana
-  const dayPatterns = [
-    { name: 'Lunes', idx: 1, regex: /\b(lunes|lun|l)\b/i },
-    { name: 'Martes', idx: 2, regex: /\b(martes|mar|m)\b/i },
-    { name: 'Miércoles', idx: 3, regex: /\b(mi[eé]rcoles|mi[eé]|x)\b/i },
-    { name: 'Jueves', idx: 4, regex: /\b(jueves|jue|j)\b/i },
-    { name: 'Viernes', idx: 5, regex: /\b(viernes|vie|v)\b/i },
-    { name: 'Sábado', idx: 6, regex: /\b(s[aá]bado|s[aá]|s)\b/i }
-  ];
+    // Buscar cabeceras de columnas con fechas: "07-sep", "08-sep", etc.
+    const dateHeaders = [];
+    items.forEach(it => {
+      const dm = it.str.trim().match(/^(\d{1,2})-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i);
+      if (dm) {
+        const day = parseInt(dm[1], 10);
+        const month = MONTHS_MAP[dm[2].toLowerCase()];
+        const year = month >= 8 ? academicYear : academicYear + 1;
+        const isoDate = `${year}-${pad(month + 1)}-${pad(day)}`;
+        dateHeaders.push({ x: it.transform[4], y: it.transform[5], date: isoDate, str: it.str.trim() });
+      }
+    });
 
-  // Regex para horas: 09:00 - 11:00 o 9:00 a 11:00 o 9-11
-  const timeRegex = /\b(\d{1,2})[:.](\d{2})\s*(?:-|a|–|al)\s*(\d{1,2})[:.](\d{2})\b/i;
-  // Regex para fechas concretas: DD/MM/YYYY o DD-MM
-  const dateRegex = /\b(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?\b/;
+    // Ordenar fechas por posición X horizontal (Lunes a Viernes)
+    dateHeaders.sort((a, b) => a.x - b.x);
 
-  // Palabras clave
-  const examKeywords = /examen|evaluaci[oó]n|parcial|final|recuperaci[oó]n|convocatoria|prueba/i;
-  const pracKeywords = /pr[aá]ctica|lab|laboratorio|seminario|taller|aula inform[aá]tica/i;
-
-  // Extraer patrones
-  for (let line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.length < 5) continue;
-
-    const timeMatch = trimmed.match(timeRegex);
-    const dateMatch = trimmed.match(dateRegex);
-
-    let isExam = examKeywords.test(trimmed);
-    let isPrac = pracKeywords.test(trimmed);
-    let calType = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
-
-    if (timeMatch || dateMatch) {
-      let startStr = '';
-      let endStr = '';
-      if (timeMatch) {
-        startStr = `${pad(timeMatch[1])}:${timeMatch[2]}`;
-        endStr = `${pad(timeMatch[3])}:${timeMatch[4]}`;
+    // Si encontramos columnas semanales de la UCLM
+    if (dateHeaders.length >= 2) {
+      // Determinar límites horizontales de cada día
+      const colBounds = [];
+      for (let i = 0; i < dateHeaders.length; i++) {
+        const cur = dateHeaders[i];
+        const next = dateHeaders[i + 1];
+        const minX = i === 0 ? cur.x - 30 : (dateHeaders[i - 1].x + cur.x) / 2;
+        const maxX = next ? (cur.x + next.x) / 2 : cur.x + 80;
+        colBounds.push({ minX, maxX, date: cur.date });
       }
 
-      let eventDate = todayISO();
-      if (dateMatch) {
-        const d = pad(dateMatch[1]);
-        const m = pad(dateMatch[2]);
-        const y = dateMatch[3] ? (dateMatch[3].length === 2 ? '20' + dateMatch[3] : dateMatch[3]) : new Date().getFullYear();
-        eventDate = `${y}-${m}-${d}`;
-      }
+      // Agrupar texto que pertenece a cada columna y fila horaria
+      // Buscamos bloques con horas (ej: "9:00-10:30", "15:30-20:30")
+      const timeMatches = [];
+      items.forEach(it => {
+        const tm = it.str.trim().match(/^(\d{1,2})[:.](\d{2})\s*[-–]\s*(\d{1,2})[:.](\d{2})$/);
+        if (tm) {
+          timeMatches.push({
+            start: `${pad(tm[1])}:${tm[2]}`,
+            end: `${pad(tm[3])}:${tm[4]}`,
+            x: it.transform[4],
+            y: it.transform[5]
+          });
+        }
+      });
 
-      // Limpiar título quitando la hora
-      let title = trimmed.replace(timeRegex, '').replace(dateRegex, '').replace(/[-–—]/g, ' ').trim();
-      if (title.length < 3) title = isExam ? 'Examen' : (isPrac ? 'Práctica' : 'Clase');
+      // Asociar cada bloque horario a su asignatura y columna de fecha
+      timeMatches.forEach(tm => {
+        // Encontrar columna de fecha por cercanía en X
+        const col = colBounds.find(c => tm.x >= c.minX && tm.x <= c.maxX);
+        if (!col) return;
 
-      results.push({
-        id: crypto.randomUUID(),
-        title: title.slice(0, 60),
-        cal: calType,
-        date: eventDate,
-        start: startStr,
-        end: endStr,
-        rawText: trimmed
+        // Buscar texto que esté justo encima de la hora (en un rango Y hacia arriba)
+        const blockItems = items.filter(it => {
+          const dy = it.transform[5] - tm.y;
+          const dx = Math.abs(it.transform[4] - tm.x);
+          return dy > 0 && dy < 85 && dx < 60;
+        });
+
+        // Ordenar de arriba a abajo
+        blockItems.sort((a, b) => b.transform[5] - a.transform[5]);
+        const textLines = blockItems.map(it => it.str.trim()).filter(Boolean);
+        const fullBlock = textLines.join(' ');
+
+        if (!fullBlock || fullBlock.length < 3) return;
+
+        // Extraer nombre de la asignatura (suele ser la primera línea o antes de PRÁCTICAS/TEORÍA)
+        let subjectName = textLines[0] || 'Asignatura';
+        // Limpiar
+        subjectName = subjectName.replace(/\b(TEORÍA|PRÁCTICAS|S\d+|AULA|GRUPO|G\d+)\b.*/i, '').trim();
+        if (subjectName.length < 3 && textLines[1]) subjectName = textLines[1];
+        subjectName = subjectName.replace(/[:,-]/g, '').trim();
+
+        // Clasificar tipo
+        const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
+        const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo/i.test(fullBlock);
+        const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
+
+        // Extraer si es grupo G1, G2, G3
+        let groupTag = 'all';
+        const gm = fullBlock.match(/\b(G1|G2|G3|G4)\b/i);
+        if (gm) groupTag = gm[1].toUpperCase();
+
+        if (subjectName.length > 2) {
+          subjects.add(subjectName);
+          events.push({
+            id: crypto.randomUUID(),
+            title: isExam ? `Examen: ${subjectName}` : (isPrac ? `Práctica: ${subjectName}` : subjectName),
+            subject: subjectName,
+            cal,
+            date: col.date,
+            start: tm.start,
+            end: tm.end,
+            group: groupTag,
+            isPractice: isPrac,
+            isExam: isExam,
+            rawText: fullBlock
+          });
+        }
       });
     }
   }
 
-  return results;
+  return { events, subjects: Array.from(subjects) };
 }
 
 async function handlePdfFile(file) {
@@ -431,73 +477,115 @@ async function handlePdfFile(file) {
   }
   uploadPrompt.style.display = 'none';
   parseProgress.style.display = 'block';
-  parseStatusText.textContent = `Analizando "${file.name}"...`;
+  parseStatusText.textContent = `Analizando calendario "${file.name}"...`;
 
   try {
-    const text = await extractTextFromPDF(file);
-    const events = parseScheduleText(text);
+    const { events, subjects } = await parseUclmPdf(file);
 
     if (events.length === 0) {
-      parseStatusText.textContent = 'No pudimos extraer las tablas automáticamente (el PDF puede ser una imagen escaneada o tener formato complejo).';
+      parseStatusText.textContent = 'No pudimos extraer las citas con el formato automático. Prueba a revisar que sea el PDF original.';
       setTimeout(() => {
         uploadPrompt.style.display = 'block';
         parseProgress.style.display = 'none';
-      }, 4000);
+      }, 3500);
       return;
     }
 
     parsedEventsRaw = events;
-    renderPreview();
+    detectedSubjects = new Set(subjects);
+    activeSelectedSubjects = new Set(subjects); // Todas seleccionadas por defecto
+
+    // Rellenar checkboxes de asignaturas
+    subjectFilterList.innerHTML = subjects.map(s => `
+      <label class="sub-pill checked" data-subj="${esc(s)}">
+        <input type="checkbox" checked value="${esc(s)}">
+        ${esc(s)}
+      </label>
+    `).join('');
+
+    renderUclmPreview();
+
     uploadPrompt.style.display = 'none';
     parseProgress.style.display = 'none';
-    importOptions.style.display = 'block';
+    filterOptions.style.display = 'block';
     previewArea.style.display = 'block';
     importConfirm.style.display = 'inline-block';
   } catch (err) {
     console.error(err);
-    parseStatusText.textContent = 'Error al leer el PDF: ' + err.message;
+    parseStatusText.textContent = 'Error al procesar: ' + err.message;
   }
 }
 
-function renderPreview() {
-  const filter = (groupFilterInput.value || '').trim().toLowerCase();
-  const filtered = parsedEventsRaw.filter(e => {
-    if (!filter) return true;
-    return e.rawText.toLowerCase().includes(filter) || e.title.toLowerCase().includes(filter);
-  });
+function getFilteredEvents() {
+  const includePrac = includePracticasSelect.value === 'yes';
+  const myGroup = groupPracticaSelect.value; // 'all', 'G1', 'G2', 'G3'
 
-  detectedCount.textContent = filtered.length;
-  previewList.innerHTML = filtered.map(e => `
+  return parsedEventsRaw.filter(e => {
+    // 1. Filtrar si la asignatura está marcada
+    if (!activeSelectedSubjects.has(e.subject)) return false;
+
+    // 2. Filtrar prácticas
+    if (e.isPractice && !includePrac) return false;
+
+    // 3. Filtrar subgrupo de prácticas (si es práctica con grupo específico)
+    if (e.isPractice && myGroup !== 'all' && e.group !== 'all') {
+      if (e.group !== myGroup) return false;
+    }
+
+    return true;
+  });
+}
+
+function renderUclmPreview() {
+  const list = getFilteredEvents();
+  detectedCount.textContent = list.length;
+  previewList.innerHTML = list.slice(0, 50).map(e => `
     <div class="preview-item" style="--c:${calById[e.cal].color}">
       <div>
-        <div class="p-title">${esc(e.title)}</div>
-        <div class="p-meta">${e.date} ${e.start ? '• ' + e.start + (e.end ? ' a ' + e.end : '') : ''} • [${calById[e.cal].name}]</div>
+        <div class="p-title">${esc(e.title)} ${e.group !== 'all' ? `[${e.group}]` : ''}</div>
+        <div class="p-meta">${e.date} • ${e.start}–${e.end} • [${calById[e.cal].name}]</div>
       </div>
       <button type="button" class="p-del" data-id="${e.id}" title="Descartar">✕</button>
     </div>
-  `).join('');
+  `).join('') + (list.length > 50 ? `<div style="padding:6px;font-size:12px;color:var(--muted);text-align:center;">...y ${list.length - 50} clases más</div>` : '');
 }
 
-groupFilterInput.oninput = () => renderPreview();
+// Eventos de controles de filtro
+subjectFilterList.onchange = (e) => {
+  const chk = e.target;
+  if (!chk) return;
+  const pill = chk.closest('.sub-pill');
+  if (chk.checked) {
+    activeSelectedSubjects.add(chk.value);
+    pill.classList.add('checked');
+  } else {
+    activeSelectedSubjects.delete(chk.value);
+    pill.classList.remove('checked');
+  }
+  renderUclmPreview();
+};
+
+includePracticasSelect.onchange = () => {
+  groupSelectContainer.style.opacity = includePracticasSelect.value === 'yes' ? '1' : '0.4';
+  groupSelectContainer.style.pointerEvents = includePracticasSelect.value === 'yes' ? 'auto' : 'none';
+  renderUclmPreview();
+};
+
+groupPracticaSelect.onchange = () => renderUclmPreview();
 
 previewList.onclick = (e) => {
   const delBtn = e.target.closest('.p-del');
   if (delBtn) {
     const id = delBtn.dataset.id;
     parsedEventsRaw = parsedEventsRaw.filter(x => x.id !== id);
-    renderPreview();
+    renderUclmPreview();
   }
 };
 
 importConfirm.onclick = async () => {
-  const filter = (groupFilterInput.value || '').trim().toLowerCase();
-  const toAdd = parsedEventsRaw.filter(e => {
-    if (!filter) return true;
-    return e.rawText.toLowerCase().includes(filter) || e.title.toLowerCase().includes(filter);
-  });
-
+  const toAdd = getFilteredEvents();
   if (!toAdd.length) {
-    alert('No hay eventos seleccionados para añadir.');
+    alert('No hay clases ni eventos seleccionados con los filtros actuales.');
     return;
   }
 
@@ -508,7 +596,7 @@ importConfirm.onclick = async () => {
 
   render();
   importDlg.close();
-  alert(`¡Se han añadido ${toAdd.length} eventos a tu agenda y sincronizado en la nube!`);
+  alert(`¡Listo! Se han añadido ${toAdd.length} clases y prácticas a tu agenda y sincronizado en todos tus dispositivos.`);
 };
 
 /* ---------- Apple Calendar Feed Dialog ---------- */
