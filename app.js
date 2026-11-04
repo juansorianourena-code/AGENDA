@@ -1,14 +1,37 @@
 'use strict';
 
-const CALENDARS = [
-  { id: 'uni',   name: 'Universidad', color: '#1f2a44' },
-  { id: 'exam',  name: 'Exámenes',    color: '#111111' },
-  { id: 'prac',  name: 'Prácticas',   color: '#5b6785' },
-  { id: 'jmv',   name: 'JMV',         color: '#6b7040' },
-  { id: 'cat',   name: 'Catequesis',  color: '#a3a77a' },
-  { id: 'pers',  name: 'Personal',    color: '#b3a47f' },
-];
-const calById = Object.fromEntries(CALENDARS.map(c => [c.id, c]));
+// Paleta armónica por asignatura (respetando blanco, beige, verde oliva, marino, tostado, gris pizarra)
+const SUBJECT_COLORS = {
+  'MOTORES': '#1f2a44',                                    // Azul marino elegante
+  'EDAFOLOGÍA Y CLIMATOLOGÍA': '#6b7040',                  // Verde oliva natural
+  'GENÉTICA Y APLICACIONES A LA INGENIERÍA': '#8c5e3c',    // Tostado / Cuero
+  'FITOTECNIA GENERAL': '#3b5a45',                         // Verde bosque profundo
+  'FITOTECNIA': '#3b5a45',
+  'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN': '#4b5563',   // Pizarra oscuro
+  'CÁLCULO DE ESTRUCTURAS': '#4b5563',
+  'CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE': '#2c4c5e',    // Azul petróleo
+  'FÍSICA I': '#2a3b5c',
+  'FÍSICA II': '#2a3b5c',
+  'QUÍMICA': '#634b66',
+  'ÁLGEBRA': '#4a4036',
+  'BIOLOGÍA I': '#4a6042',
+  'BIOLOGÍA II': '#4a6042',
+  'DEFAULT': '#1f2a44'
+};
+
+function getEventColor(e) {
+  if (e.cal === 'exam') return '#111111'; // Exámenes siempre en negro destacado
+  if (e.cal === 'jmv') return '#6b7040';  // JMV verde oliva
+  if (e.cal === 'cat') return '#a3a77a';  // Catequesis salvia claro
+  if (e.cal === 'pers') return '#b3a47f'; // Personal arena tostado
+
+  // Si es clase o práctica de la universidad, asignar color propio por asignatura
+  const subj = (e.subject || '').toUpperCase().trim();
+  for (const [key, color] of Object.entries(SUBJECT_COLORS)) {
+    if (subj.includes(key)) return color;
+  }
+  return calById[e.cal] ? calById[e.cal].color : '#1f2a44';
+}
 
 const H0 = 6, H1 = 24, HOUR = 48; // horas visibles y alto por hora (px)
 const PREFS = 'agenda.prefs';
@@ -312,7 +335,7 @@ function timeGrid(days) {
       const widthPct = (100 / totalCols).toFixed(2);
       const leftPct = (colIdx * (100 / totalCols)).toFixed(2);
 
-      return `<button class="ev" data-id="${e.id}" style="--c:${calById[e.cal].color};top:${top}px;height:${h}px;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);">
+      return `<button class="ev" data-id="${e.id}" style="--c:${getEventColor(e)};top:${top}px;height:${h}px;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);">
         ${esc(e.title)}
         <small>${e.start}${e.end ? '–' + e.end : ''}</small>
       </button>`;
@@ -451,15 +474,15 @@ function agendaView() {
       // Ordenar por hora
       dayEvs.forEach((e, idx) => {
         const cal = calById[e.cal] || calById['uni'];
+        const evColor = getEventColor(e);
         const timeStr = e.start ? `${e.start} – ${e.end || ''}` : 'Todo el día';
 
-        // Si es viernes o día entre semana y es la hora de descanso, mostrar píldora limpia de descanso
         html += `
           <button type="button" class="agenda-item" data-id="${e.id}">
             <div class="agenda-time">${timeStr}</div>
             <div class="agenda-detail">
               <div class="agenda-title">${esc(e.title)}</div>
-              <span class="agenda-cal-badge" style="--c:${cal.color}">${cal.name}</span>
+              <span class="agenda-cal-badge" style="--c:${evColor}">${cal.name}</span>
             </div>
           </button>
         `;
@@ -484,7 +507,7 @@ function monthView() {
     if (i >= 35 && day.getMonth() !== d.getMonth()) break;
     const evs = eventsOn(iso(day));
     const shown = evs.slice(0, 3).map(e =>
-      `<span class="m-ev" style="--c:${calById[e.cal].color}">${e.start ? e.start + ' ' : ''}${esc(e.title)}</span>`).join('');
+      `<span class="m-ev" style="--c:${getEventColor(e)}">${e.start ? e.start + ' ' : ''}${esc(e.title)}</span>`).join('');
     const more = evs.length > 3 ? `<div class="m-more">+${evs.length - 3} más</div>` : '';
     cells += `<button class="m-cell ${day.getMonth() !== d.getMonth() ? 'out' : ''} ${sameDay(day, new Date()) ? 'today' : ''}" data-day="${iso(day)}"><span class="n">${day.getDate()}</span>${shown}${more}</button>`;
   }
@@ -766,73 +789,116 @@ async function parseUclmPdf(file) {
           }
         });
       } else {
-        // Horario semanal de clases habitual
-        const timeMatches = [];
+        // Horario semanal de clases habitual UCLM
+        // 1. Descomponer items que contienen saltos horizontales grandes (kerning múltiple en misma línea)
+        const atomicItems = [];
         items.forEach(it => {
-          const tm = it.str.trim().match(/^(\d{1,2})[:.](\d{2})\s*[-–]\s*(\d{1,2})[:.](\d{2})$/);
-          if (tm) {
-            timeMatches.push({
-              start: `${pad(tm[1])}:${tm[2]}`,
-              end: `${pad(tm[3])}:${tm[4]}`,
+          const str = (it.str || '').trim();
+          if (!str) return;
+
+          // Buscar si hay horas múltiples o bloques concatenados por el motor PDF
+          const timeInstances = [...str.matchAll(/\b(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})\b/g)];
+          if (timeInstances.length > 1) {
+            // Múltiples horas en un solo texto (ej: "10:45-12:1510:45-12:1510:45-12:15")
+            // Distribuir proporcionalmente en las columnas de la semana correspondientes
+            timeInstances.forEach((m, idx) => {
+              const startT = m[1].replace('.', ':');
+              const endT = m[2].replace('.', ':');
+              // Si coincide con columnas de fechas
+              const targetCol = dateHeaders[idx % dateHeaders.length];
+              if (targetCol) {
+                atomicItems.push({
+                  str: `${startT}-${endT}`,
+                  x: targetCol.x,
+                  y: it.transform[5],
+                  isTime: true,
+                  start: startT,
+                  end: endT
+                });
+              }
+            });
+          } else {
+            const tm = str.match(/\b(\d{1,2}[:.]\d{2})\s*[-–]\s*(\d{1,2}[:.]\d{2})\b/);
+            atomicItems.push({
+              str: str,
               x: it.transform[4],
-              y: it.transform[5]
+              y: it.transform[5],
+              isTime: !!tm,
+              start: tm ? tm[1].replace('.', ':') : '',
+              end: tm ? tm[2].replace('.', ':') : ''
             });
           }
         });
 
-        timeMatches.forEach(tm => {
-          const col = colBounds.find(c => tm.x >= c.minX && tm.x <= c.maxX);
-          if (!col) return;
+        // 2. Extraer horas individuales válidas
+        const timeEntries = atomicItems.filter(it => it.isTime);
 
-          const blockItems = items.filter(it => {
-            const dy = it.transform[5] - tm.y;
-            const dx = Math.abs(it.transform[4] - tm.x);
-            return dy > 0 && dy < 85 && dx < 60;
-          });
+        // Agrupar filas de fechas semanales por coordenada Y
+        const weekRows = {};
+        dateHeaders.forEach(dh => {
+          const yKey = Math.round(dh.y / 15) * 15;
+          if (!weekRows[yKey]) weekRows[yKey] = [];
+          weekRows[yKey].push(dh);
+        });
 
-          blockItems.sort((a, b) => b.transform[5] - a.transform[5]);
-          const textLines = blockItems.map(it => it.str.trim()).filter(Boolean);
-          const fullBlock = textLines.join(' ');
-          if (!fullBlock || fullBlock.length < 3) return;
+        Object.values(weekRows).forEach(wDates => {
+          wDates.sort((a, b) => a.x - b.x);
 
-          // Nombre de asignatura limpio y sin profesores
-          const subjectName = cleanSubjectName(fullBlock);
-          if (!subjectName) return; // Descartar si no es una asignatura válida
+          wDates.forEach((colDh, colIdx) => {
+            const minX = colIdx === 0 ? colDh.x - 45 : (wDates[colIdx - 1].x + colDh.x) / 2;
+            const maxX = colIdx === wDates.length - 1 ? colDh.x + 55 : (colDh.x + wDates[colIdx + 1].x) / 2;
 
-          const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
-          const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo|visita/i.test(fullBlock);
-          const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
+            // Horas que caen en esta columna específica y dentro del rango Y de la semana
+            const colTimes = timeEntries.filter(t => t.x >= minX && t.x <= maxX && t.y > colDh.y && t.y < colDh.y + 320);
 
-          let groupTag = 'all';
-          const gm = fullBlock.match(/\b(G1|G2|G3|G4)\b/i);
-          if (gm) groupTag = gm[1].toUpperCase();
+            colTimes.forEach(tEntry => {
+              // Buscar textos que estén en la misma columna y justo arriba de la hora
+              const aboveChunks = atomicItems.filter(it => {
+                const dx = it.x >= minX && it.x <= maxX;
+                const dy = tEntry.y - it.y;
+                return dx && dy > 0 && dy < 75 && !it.isTime;
+              });
 
-          const course = detectCourseForSubject(subjectName);
+              aboveChunks.sort((a, b) => a.y - b.y);
+              const fullBlock = aboveChunks.map(c => c.str).join(' ').trim();
+              if (!fullBlock || fullBlock.length < 3) return;
 
-          // Título limpio: únicamente tipo y asignatura (sin profesores ni edificios)
-          let cleanTitle = subjectName;
-          if (isExam) cleanTitle = `Examen: ${subjectName}`;
-          else if (isPrac) cleanTitle = `Práctica: ${subjectName}${groupTag !== 'all' ? ' (' + groupTag + ')' : ''}`;
+              const subjectName = cleanSubjectName(fullBlock);
+              if (!subjectName) return;
 
-          if (subjectName.length > 2) {
-            subjects.add(subjectName);
-            events.push({
-              id: crypto.randomUUID(),
-              title: cleanTitle,
-              subject: subjectName,
-              cal,
-              date: col.date,
-              start: tm.start,
-              end: tm.end,
-              group: groupTag,
-              isPractice: isPrac,
-              isExam: isExam,
-              course: course,
-              convocatoria: 'ordinaria',
-              notes: fullBlock, // Los detalles como aula o profesor quedan guardados en notas por si los necesitas, pero no en el título
-              rawText: fullBlock
+              const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
+              const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo|visita/i.test(fullBlock);
+              const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
+
+              let groupTag = 'all';
+              const gm = fullBlock.match(/\b(G1|G2|G3|G4)\b/i);
+              if (gm) groupTag = gm[1].toUpperCase();
+
+              const course = detectCourseForSubject(subjectName);
+
+              let cleanTitle = subjectName;
+              if (isExam) cleanTitle = `Examen: ${subjectName}`;
+              else if (isPrac) cleanTitle = `Práctica: ${subjectName}${groupTag !== 'all' ? ' (' + groupTag + ')' : ''}`;
+
+              subjects.add(subjectName);
+              events.push({
+                id: crypto.randomUUID(),
+                title: cleanTitle,
+                subject: subjectName,
+                cal,
+                date: colDh.date,
+                start: tEntry.start,
+                end: tEntry.end,
+                group: groupTag,
+                isPractice: isPrac,
+                isExam: isExam,
+                course: course,
+                convocatoria: 'ordinaria',
+                notes: fullBlock,
+                rawText: fullBlock
+              });
             });
-          }
+          });
         });
       }
     }
@@ -1388,7 +1454,27 @@ if (studyPlanForm) {
   };
 }
 
-/* ---------- Reprogramación Sin Culpa (Modo Enfoque) ---------- */
+/* ---------- Botón de Borrado de Horario (Limpiar Clases/Exámenes de golpe) ---------- */
+const clearCalBtn = $('clearCalBtn');
+if (clearCalBtn) {
+  clearCalBtn.onclick = async () => {
+    const uniEvents = state.events.filter(e => e.cal === 'uni' || e.cal === 'prac' || e.cal === 'exam');
+    if (!uniEvents.length) {
+      alert('No hay clases ni exámenes que limpiar en tu agenda.');
+      return;
+    }
+
+    const confirmMsg = `¿Seguro que quieres borrar todas las clases, prácticas y exámenes importados (${uniEvents.length} eventos)?\n\n(Tus notas personales, JMV y Catequesis NO se borrarán). Así podrás volver a subir tu PDF limpio desde cero.`;
+    if (!confirm(confirmMsg)) return;
+
+    for (const ev of uniEvents) {
+      pushOp({ op: 'delete', id: ev.id });
+    }
+    state.events = state.events.filter(e => e.cal !== 'uni' && e.cal !== 'prac' && e.cal !== 'exam');
+    render();
+    alert('¡Horario universitario limpiado por completo! Ya puedes subir el PDF con los ajustes afinados.');
+  };
+}
 $('view').addEventListener('click', (e) => {
   const delayBtn = e.target.closest('[data-delay-id]');
   if (delayBtn) {

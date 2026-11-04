@@ -221,3 +221,6 @@ ol.hint li { margin-bottom: 4px; }
 .dump-entry { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; background: #faf7f0; border-left: 3px solid var(--c); font-size: 13px; }
 .dump-entry-text { flex: 1; margin: 0 8px; }
 .dump-entry-btn { background: none; border: 1px solid var(--sand); border-radius: 6px; padding: 3px 8px; font-size: 11px; cursor: pointer; color: var(--navy); }
+
+.danger-link { color: #a33 !important; }
+.danger-link:hover { text-decoration: underline; }
