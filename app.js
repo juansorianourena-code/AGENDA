@@ -285,6 +285,232 @@ function yearView() {
   return `<div class="y-grid">${months}</div>`;
 }
 
+/* ---------- Importador de Horario PDF ---------- */
+const importDlg = $('importDlg');
+const importBtn = $('importBtn');
+const dropZone = $('dropZone');
+const pdfFileInput = $('pdfFileInput');
+const browseBtn = $('browseBtn');
+const uploadPrompt = $('uploadPrompt');
+const parseProgress = $('parseProgress');
+const parseStatusText = $('parseStatusText');
+const importOptions = $('importOptions');
+const previewArea = $('previewArea');
+const previewList = $('previewList');
+const detectedCount = $('detectedCount');
+const importConfirm = $('importConfirm');
+const importCancel = $('importCancel');
+const groupFilterInput = $('groupFilter');
+
+let parsedEventsRaw = [];
+
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/legacy/build/pdf.worker.js';
+}
+
+importBtn.onclick = () => {
+  parsedEventsRaw = [];
+  previewList.innerHTML = '';
+  previewArea.style.display = 'none';
+  importOptions.style.display = 'none';
+  importConfirm.style.display = 'none';
+  uploadPrompt.style.display = 'block';
+  parseProgress.style.display = 'none';
+  pdfFileInput.value = '';
+  importDlg.showModal();
+};
+
+importCancel.onclick = () => importDlg.close();
+browseBtn.onclick = (e) => { e.stopPropagation(); pdfFileInput.click(); };
+dropZone.onclick = (e) => { if (e.target !== browseBtn) pdfFileInput.click(); };
+
+dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+dropZone.ondrop = (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    handlePdfFile(e.dataTransfer.files[0]);
+  }
+};
+
+pdfFileInput.onchange = (e) => {
+  if (e.target.files && e.target.files[0]) {
+    handlePdfFile(e.target.files[0]);
+  }
+};
+
+async function extractTextFromPDF(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  const pagesText = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    // Agrupar items por línea o concatenar ordenadamente
+    const strings = content.items.map(item => item.str);
+    pagesText.push(strings.join(' '));
+  }
+  return pagesText.join('\n');
+}
+
+function parseScheduleText(fullText) {
+  const results = [];
+  const lines = fullText.split(/\r?\n| {3,}/);
+
+  // Días de la semana
+  const dayPatterns = [
+    { name: 'Lunes', idx: 1, regex: /\b(lunes|lun|l)\b/i },
+    { name: 'Martes', idx: 2, regex: /\b(martes|mar|m)\b/i },
+    { name: 'Miércoles', idx: 3, regex: /\b(mi[eé]rcoles|mi[eé]|x)\b/i },
+    { name: 'Jueves', idx: 4, regex: /\b(jueves|jue|j)\b/i },
+    { name: 'Viernes', idx: 5, regex: /\b(viernes|vie|v)\b/i },
+    { name: 'Sábado', idx: 6, regex: /\b(s[aá]bado|s[aá]|s)\b/i }
+  ];
+
+  // Regex para horas: 09:00 - 11:00 o 9:00 a 11:00 o 9-11
+  const timeRegex = /\b(\d{1,2})[:.](\d{2})\s*(?:-|a|–|al)\s*(\d{1,2})[:.](\d{2})\b/i;
+  // Regex para fechas concretas: DD/MM/YYYY o DD-MM
+  const dateRegex = /\b(\d{1,2})[\/\.-](\d{1,2})(?:[\/\.-](\d{2,4}))?\b/;
+
+  // Palabras clave
+  const examKeywords = /examen|evaluaci[oó]n|parcial|final|recuperaci[oó]n|convocatoria|prueba/i;
+  const pracKeywords = /pr[aá]ctica|lab|laboratorio|seminario|taller|aula inform[aá]tica/i;
+
+  // Extraer patrones
+  for (let line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.length < 5) continue;
+
+    const timeMatch = trimmed.match(timeRegex);
+    const dateMatch = trimmed.match(dateRegex);
+
+    let isExam = examKeywords.test(trimmed);
+    let isPrac = pracKeywords.test(trimmed);
+    let calType = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
+
+    if (timeMatch || dateMatch) {
+      let startStr = '';
+      let endStr = '';
+      if (timeMatch) {
+        startStr = `${pad(timeMatch[1])}:${timeMatch[2]}`;
+        endStr = `${pad(timeMatch[3])}:${timeMatch[4]}`;
+      }
+
+      let eventDate = todayISO();
+      if (dateMatch) {
+        const d = pad(dateMatch[1]);
+        const m = pad(dateMatch[2]);
+        const y = dateMatch[3] ? (dateMatch[3].length === 2 ? '20' + dateMatch[3] : dateMatch[3]) : new Date().getFullYear();
+        eventDate = `${y}-${m}-${d}`;
+      }
+
+      // Limpiar título quitando la hora
+      let title = trimmed.replace(timeRegex, '').replace(dateRegex, '').replace(/[-–—]/g, ' ').trim();
+      if (title.length < 3) title = isExam ? 'Examen' : (isPrac ? 'Práctica' : 'Clase');
+
+      results.push({
+        id: crypto.randomUUID(),
+        title: title.slice(0, 60),
+        cal: calType,
+        date: eventDate,
+        start: startStr,
+        end: endStr,
+        rawText: trimmed
+      });
+    }
+  }
+
+  return results;
+}
+
+async function handlePdfFile(file) {
+  if (!file || file.type !== 'application/pdf') {
+    alert('Por favor selecciona un archivo PDF válido.');
+    return;
+  }
+  uploadPrompt.style.display = 'none';
+  parseProgress.style.display = 'block';
+  parseStatusText.textContent = `Analizando "${file.name}"...`;
+
+  try {
+    const text = await extractTextFromPDF(file);
+    const events = parseScheduleText(text);
+
+    if (events.length === 0) {
+      parseStatusText.textContent = 'No pudimos extraer las tablas automáticamente (el PDF puede ser una imagen escaneada o tener formato complejo).';
+      setTimeout(() => {
+        uploadPrompt.style.display = 'block';
+        parseProgress.style.display = 'none';
+      }, 4000);
+      return;
+    }
+
+    parsedEventsRaw = events;
+    renderPreview();
+    uploadPrompt.style.display = 'none';
+    parseProgress.style.display = 'none';
+    importOptions.style.display = 'block';
+    previewArea.style.display = 'block';
+    importConfirm.style.display = 'inline-block';
+  } catch (err) {
+    console.error(err);
+    parseStatusText.textContent = 'Error al leer el PDF: ' + err.message;
+  }
+}
+
+function renderPreview() {
+  const filter = (groupFilterInput.value || '').trim().toLowerCase();
+  const filtered = parsedEventsRaw.filter(e => {
+    if (!filter) return true;
+    return e.rawText.toLowerCase().includes(filter) || e.title.toLowerCase().includes(filter);
+  });
+
+  detectedCount.textContent = filtered.length;
+  previewList.innerHTML = filtered.map(e => `
+    <div class="preview-item" style="--c:${calById[e.cal].color}">
+      <div>
+        <div class="p-title">${esc(e.title)}</div>
+        <div class="p-meta">${e.date} ${e.start ? '• ' + e.start + (e.end ? ' a ' + e.end : '') : ''} • [${calById[e.cal].name}]</div>
+      </div>
+      <button type="button" class="p-del" data-id="${e.id}" title="Descartar">✕</button>
+    </div>
+  `).join('');
+}
+
+groupFilterInput.oninput = () => renderPreview();
+
+previewList.onclick = (e) => {
+  const delBtn = e.target.closest('.p-del');
+  if (delBtn) {
+    const id = delBtn.dataset.id;
+    parsedEventsRaw = parsedEventsRaw.filter(x => x.id !== id);
+    renderPreview();
+  }
+};
+
+importConfirm.onclick = async () => {
+  const filter = (groupFilterInput.value || '').trim().toLowerCase();
+  const toAdd = parsedEventsRaw.filter(e => {
+    if (!filter) return true;
+    return e.rawText.toLowerCase().includes(filter) || e.title.toLowerCase().includes(filter);
+  });
+
+  if (!toAdd.length) {
+    alert('No hay eventos seleccionados para añadir.');
+    return;
+  }
+
+  for (let ev of toAdd) {
+    state.events.push(ev);
+    pushOp({ op: 'upsert', row: toRow(ev) });
+  }
+
+  render();
+  importDlg.close();
+  alert(`¡Se han añadido ${toAdd.length} eventos a tu agenda y sincronizado en la nube!`);
+};
+
 /* ---------- Apple Calendar Feed Dialog ---------- */
 const feedDlg = $('feedDlg');
 const feedUrlInput = $('feedUrl');

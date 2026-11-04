@@ -113,3 +113,22 @@ dialog input, dialog select, dialog textarea { display: block; width: 100%; marg
 ol.hint { padding-left: 20px; margin: 8px 0 14px; }
 ol.hint li { margin-bottom: 4px; }
 #feedUrl { font-size: 12px; color: var(--navy); background: var(--beige); border: 1px solid var(--sand); padding: 8px 10px; border-radius: 8px; width: 100%; margin-bottom: 12px; }
+
+/* Importador PDF */
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn { font-size: 13px; font-weight: 500; padding: 8px 12px; }
+.wide-dialog { width: min(640px, 94vw); max-height: 85vh; overflow-y: auto; }
+.upload-zone { border: 2px dashed var(--sand); border-radius: 12px; padding: 24px 16px; text-align: center; background: #faf7f0; cursor: pointer; transition: background .15s; }
+.upload-zone.dragover { background: #ede7d8; border-color: var(--olive); }
+.upload-icon { font-size: 36px; display: block; margin-bottom: 8px; }
+.upload-prompt p { margin: 4px 0; font-size: 14px; }
+.link-btn { background: none; border: 0; color: var(--navy); text-decoration: underline; font-weight: 600; cursor: pointer; padding: 0; }
+.muted-text { font-size: 12px; color: var(--muted); }
+.parse-progress { padding: 12px; font-size: 14px; color: var(--olive); font-weight: 500; }
+.preview-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.preview-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.preview-list { max-height: 240px; overflow-y: auto; border: 1px solid var(--sand); border-radius: 8px; background: var(--white); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.preview-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: 6px; background: #faf8f5; border-left: 4px solid var(--c); font-size: 13px; }
+.preview-item .p-title { font-weight: 500; }
+.preview-item .p-meta { color: var(--muted); font-size: 11px; }
+.preview-item .p-del { background: none; border: 0; color: #a33; cursor: pointer; font-size: 15px; padding: 0 4px; }
