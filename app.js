@@ -300,6 +300,7 @@ const includePracticasSelect = $('includePracticasSelect');
 const groupPracticaSelect = $('groupPracticaSelect');
 const groupSelectContainer = $('groupSelectContainer');
 const courseLevelSelect = $('courseLevelSelect');
+const examConvocatoriaSelect = $('examConvocatoriaSelect');
 const previewArea = $('previewArea');
 const previewList = $('previewList');
 const detectedCount = $('detectedCount');
@@ -310,10 +311,43 @@ let parsedEventsRaw = [];
 let detectedSubjects = new Set();
 let activeSelectedSubjects = new Set();
 
-const MONTHS_MAP = {
-  'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
-  'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+// Diccionario de asignaturas oficiales por curso en la Escuela de Agrónomos UCLM
+const UCLM_COURSES = {
+  1: [
+    'física i', 'química', 'expresión gráfica', 'álgebra', 'biología i',
+    'estadística y métodos computacionales', 'física ii', 'cálculo y ecuaciones diferenciales',
+    'biología ii', 'empresa'
+  ],
+  2: [
+    'motores', 'ciencia y tecnología del medio ambiente', 'edafología y climatología',
+    'genética y aplicaciones a la ingeniería', 'fitotecnia general', 'fitotecnia',
+    'cálculo de estructuras y electrificación', 'cálculo de estructuras', 'bases de la producción animal',
+    'hidraúlica', 'hidráulica', 'topografía'
+  ],
+  3: [
+    'cultivos herbáceos', 'arboricultura general. viticultura', 'arboricultura', 'viticultura',
+    'producción animal iii', 'construcciones agropecuarias', 'producción animal i',
+    'proteccion de cultivos', 'protección de cultivos', 'producción animal ii',
+    'química agrícola', 'economía y comercialización', 'sistemas y tecnologías del riego',
+    'maquinaria agrícola'
+  ],
+  4: [
+    'producción ecológica e integrada', 'producción animal iv y tratamiento de residuos agropecuarios',
+    'planificación de infraestructuras y mencanización agraria', 'mecanización agraria',
+    'proyectos', 'horticultura', 'ingeniería mecánica y energética en la agricultura',
+    'planificación agronómica de cultivos'
+  ]
 };
+
+function detectCourseForSubject(subjName) {
+  const s = subjName.toLowerCase();
+  for (let c = 1; c <= 4; c++) {
+    if (UCLM_COURSES[c].some(term => s.includes(term) || term.includes(s))) {
+      return c;
+    }
+  }
+  return 0; // Desconocido / otro
+}
 
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/legacy/build/pdf.worker.js';
@@ -348,7 +382,12 @@ pdfFileInput.onchange = (e) => {
   if (e.target.files && e.target.files[0]) handlePdfFile(e.target.files[0]);
 };
 
-// Parser espacial de tablas semanales de la UCLM
+const MONTHS_MAP = {
+  'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+  'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+};
+
+// Parser espacial de tablas semanales y exámenes de la UCLM
 async function parseUclmPdf(file) {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -360,32 +399,33 @@ async function parseUclmPdf(file) {
     const content = await page.getTextContent();
     const items = content.items;
 
-    // Detectar curso académico si aparece en la cabecera (ej: 2026/2027)
+    // Detectar si es calendario de exámenes o de clases semanales
+    const allPageText = items.map(it => it.str).join(' ');
+    const isExamDoc = /CONVOCATORIA\s*ORDINARIA|CONVOCATORIA\s*EXTRAORDINARIA|calendario\s*de\s*ex[aá]menes/i.test(allPageText);
+
     let academicYear = 2026;
     for (let it of items) {
-      const ym = it.str.match(/CURSO\s*(\d{4})\/(\d{4})/i);
+      const ym = it.str.match(/CURSO\s*(\d{4})\/(\d{2,4})/i);
       if (ym) academicYear = parseInt(ym[1], 10);
     }
 
-    // Buscar cabeceras de columnas con fechas: "07-sep", "08-sep", etc.
+    // Buscar cabeceras de columnas con fechas: "04-ene", "08-sep", "11-ene", etc.
     const dateHeaders = [];
     items.forEach(it => {
       const dm = it.str.trim().match(/^(\d{1,2})-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i);
       if (dm) {
         const day = parseInt(dm[1], 10);
         const month = MONTHS_MAP[dm[2].toLowerCase()];
+        // Los meses de enero a julio en convocatorias ordinarias pertenecen al año siguiente (ej: 2027)
         const year = month >= 8 ? academicYear : academicYear + 1;
         const isoDate = `${year}-${pad(month + 1)}-${pad(day)}`;
         dateHeaders.push({ x: it.transform[4], y: it.transform[5], date: isoDate, str: it.str.trim() });
       }
     });
 
-    // Ordenar fechas por posición X horizontal (Lunes a Viernes)
     dateHeaders.sort((a, b) => a.x - b.x);
 
-    // Si encontramos columnas semanales de la UCLM
     if (dateHeaders.length >= 2) {
-      // Determinar límites horizontales de cada día
       const colBounds = [];
       for (let i = 0; i < dateHeaders.length; i++) {
         const cur = dateHeaders[i];
@@ -395,79 +435,138 @@ async function parseUclmPdf(file) {
         colBounds.push({ minX, maxX, date: cur.date });
       }
 
-      // Agrupar texto que pertenece a cada columna y fila horaria
-      // Buscamos bloques con horas (ej: "9:00-10:30", "15:30-20:30")
-      const timeMatches = [];
-      items.forEach(it => {
-        const tm = it.str.trim().match(/^(\d{1,2})[:.](\d{2})\s*[-–]\s*(\d{1,2})[:.](\d{2})$/);
-        if (tm) {
-          timeMatches.push({
-            start: `${pad(tm[1])}:${tm[2]}`,
-            end: `${pad(tm[3])}:${tm[4]}`,
-            x: it.transform[4],
-            y: it.transform[5]
-          });
-        }
-      });
+      if (isExamDoc) {
+        // En los calendarios de exámenes, los horarios suelen ser MAÑANA (9:00) o TARDE (16:00)
+        // Buscamos los textos "Ordinario" o "Extraordinario" o nombres de asignaturas
+        items.forEach(it => {
+          const str = it.str.trim();
+          if (!str || str.length < 3) return;
+          // Ignorar cabeceras y textos irrelevantes
+          if (/^(CURSO|Hora|Lunes|Martes|Mi[eé]rcoles|Jueves|Viernes|MA[ÑN]ANA|TARDE|D[IÍ]A|Borrador|GRADO|CONVOCATORIA)/i.test(str)) return;
 
-      // Asociar cada bloque horario a su asignatura y columna de fecha
-      timeMatches.forEach(tm => {
-        // Encontrar columna de fecha por cercanía en X
-        const col = colBounds.find(c => tm.x >= c.minX && tm.x <= c.maxX);
-        if (!col) return;
+          // Ver si coincide con alguna asignatura conocida
+          const detectedCourse = detectCourseForSubject(str);
+          if (detectedCourse > 0 || /AULA\s*\d/i.test(str) === false && str.length > 5 && !/^\d+$/.test(str)) {
+            // Encontrar columna de fecha
+            const col = colBounds.find(c => it.transform[4] >= c.minX && it.transform[4] <= c.maxX);
+            if (!col) return;
 
-        // Buscar texto que esté justo encima de la hora (en un rango Y hacia arriba)
-        const blockItems = items.filter(it => {
-          const dy = it.transform[5] - tm.y;
-          const dx = Math.abs(it.transform[4] - tm.x);
-          return dy > 0 && dy < 85 && dx < 60;
+            // Determinar si es de mañana (9:00) o de tarde (16:00) según la coordenada Y
+            // En esta plantilla, MAÑANA está en la mitad superior y TARDE en la mitad inferior
+            const isMorning = it.transform[5] > 360;
+            const startTime = isMorning ? '09:00' : '16:00';
+            const endTime = isMorning ? '12:00' : '19:00';
+
+            // Detectar si es Ordinario o Extraordinario buscando texto cercano
+            const nearby = items.filter(other => Math.abs(other.transform[4] - it.transform[4]) < 50 && Math.abs(other.transform[5] - it.transform[5]) < 50);
+            const isExtra = nearby.some(n => /Extraordinario/i.test(n.str));
+            const aulaItem = nearby.find(n => /AULA\s*\d/i.test(n.str));
+            const aulaStr = aulaItem ? aulaItem.str : '';
+
+            // Limpiar título
+            let cleanSubj = str.replace(/Ordinario|Extraordinario/ig, '').trim();
+            if (cleanSubj.length > 3) {
+              subjects.add(cleanSubj);
+              events.push({
+                id: crypto.randomUUID(),
+                title: `Examen: ${cleanSubj}`,
+                subject: cleanSubj,
+                cal: 'exam',
+                date: col.date,
+                start: startTime,
+                end: endTime,
+                group: 'all',
+                isPractice: false,
+                isExam: true,
+                course: detectedCourse,
+                convocatoria: isExtra ? 'extraordinaria' : 'ordinaria',
+                notes: `${isExtra ? 'Convocatoria Extraordinaria' : 'Convocatoria Ordinaria'} • ${aulaStr}`,
+                rawText: cleanSubj
+              });
+            }
+          }
+        });
+      } else {
+        // Horario semanal de clases habitual
+        const timeMatches = [];
+        items.forEach(it => {
+          const tm = it.str.trim().match(/^(\d{1,2})[:.](\d{2})\s*[-–]\s*(\d{1,2})[:.](\d{2})$/);
+          if (tm) {
+            timeMatches.push({
+              start: `${pad(tm[1])}:${tm[2]}`,
+              end: `${pad(tm[3])}:${tm[4]}`,
+              x: it.transform[4],
+              y: it.transform[5]
+            });
+          }
         });
 
-        // Ordenar de arriba a abajo
-        blockItems.sort((a, b) => b.transform[5] - a.transform[5]);
-        const textLines = blockItems.map(it => it.str.trim()).filter(Boolean);
-        const fullBlock = textLines.join(' ');
+        timeMatches.forEach(tm => {
+          const col = colBounds.find(c => tm.x >= c.minX && tm.x <= c.maxX);
+          if (!col) return;
 
-        if (!fullBlock || fullBlock.length < 3) return;
-
-        // Extraer nombre de la asignatura (suele ser la primera línea o antes de PRÁCTICAS/TEORÍA)
-        let subjectName = textLines[0] || 'Asignatura';
-        // Limpiar
-        subjectName = subjectName.replace(/\b(TEORÍA|PRÁCTICAS|S\d+|AULA|GRUPO|G\d+)\b.*/i, '').trim();
-        if (subjectName.length < 3 && textLines[1]) subjectName = textLines[1];
-        subjectName = subjectName.replace(/[:,-]/g, '').trim();
-
-        // Clasificar tipo
-        const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
-        const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo/i.test(fullBlock);
-        const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
-
-        // Extraer si es grupo G1, G2, G3
-        let groupTag = 'all';
-        const gm = fullBlock.match(/\b(G1|G2|G3|G4)\b/i);
-        if (gm) groupTag = gm[1].toUpperCase();
-
-        if (subjectName.length > 2) {
-          subjects.add(subjectName);
-          events.push({
-            id: crypto.randomUUID(),
-            title: isExam ? `Examen: ${subjectName}` : (isPrac ? `Práctica: ${subjectName}` : subjectName),
-            subject: subjectName,
-            cal,
-            date: col.date,
-            start: tm.start,
-            end: tm.end,
-            group: groupTag,
-            isPractice: isPrac,
-            isExam: isExam,
-            rawText: fullBlock
+          const blockItems = items.filter(it => {
+            const dy = it.transform[5] - tm.y;
+            const dx = Math.abs(it.transform[4] - tm.x);
+            return dy > 0 && dy < 85 && dx < 60;
           });
-        }
-      });
+
+          blockItems.sort((a, b) => b.transform[5] - a.transform[5]);
+          const textLines = blockItems.map(it => it.str.trim()).filter(Boolean);
+          const fullBlock = textLines.join(' ');
+          if (!fullBlock || fullBlock.length < 3) return;
+
+          let subjectName = textLines[0] || 'Asignatura';
+          subjectName = subjectName.replace(/\b(TEORÍA|PRÁCTICAS|S\d+|AULA|GRUPO|G\d+)\b.*/i, '').trim();
+          if (subjectName.length < 3 && textLines[1]) subjectName = textLines[1];
+          subjectName = subjectName.replace(/[:,-]/g, '').trim();
+
+          const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
+          const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo/i.test(fullBlock);
+          const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
+
+          let groupTag = 'all';
+          const gm = fullBlock.match(/\b(G1|G2|G3|G4)\b/i);
+          if (gm) groupTag = gm[1].toUpperCase();
+
+          const course = detectCourseForSubject(subjectName);
+
+          if (subjectName.length > 2) {
+            subjects.add(subjectName);
+            events.push({
+              id: crypto.randomUUID(),
+              title: isExam ? `Examen: ${subjectName}` : (isPrac ? `Práctica: ${subjectName}` : subjectName),
+              subject: subjectName,
+              cal,
+              date: col.date,
+              start: tm.start,
+              end: tm.end,
+              group: groupTag,
+              isPractice: isPrac,
+              isExam: isExam,
+              course: course,
+              convocatoria: 'ordinaria',
+              notes: fullBlock,
+              rawText: fullBlock
+            });
+          }
+        });
+      }
     }
   }
 
-  return { events, subjects: Array.from(subjects) };
+  // Eliminar posibles duplicados
+  const uniqueEvents = [];
+  const seen = new Set();
+  events.forEach(e => {
+    const k = `${e.title}|${e.date}|${e.start}`;
+    if (!seen.has(k)) {
+      seen.add(k);
+      uniqueEvents.push(e);
+    }
+  });
+
+  return { events: uniqueEvents, subjects: Array.from(subjects) };
 }
 
 async function handlePdfFile(file) {
@@ -518,16 +617,28 @@ async function handlePdfFile(file) {
 
 function getFilteredEvents() {
   const includePrac = includePracticasSelect.value === 'yes';
-  const myGroup = groupPracticaSelect.value; // 'all', 'G1', 'G2', 'G3'
+  const myGroup = groupPracticaSelect.value;
+  const courseLevel = courseLevelSelect.value; // 'all', '1', '2', '3', '4'
+  const convo = examConvocatoriaSelect ? examConvocatoriaSelect.value : 'all';
 
   return parsedEventsRaw.filter(e => {
-    // 1. Filtrar si la asignatura está marcada
+    // 1. Filtrar por curso si se ha seleccionado uno específico (1º, 2º, 3º, 4º)
+    if (courseLevel !== 'all' && e.course && e.course > 0) {
+      if (String(e.course) !== String(courseLevel)) return false;
+    }
+
+    // 2. Filtrar convocatoria en exámenes
+    if (e.isExam && convo !== 'all' && e.convocatoria) {
+      if (e.convocatoria !== convo) return false;
+    }
+
+    // 3. Filtrar si la asignatura está desmarcada por el usuario
     if (!activeSelectedSubjects.has(e.subject)) return false;
 
-    // 2. Filtrar prácticas
+    // 4. Filtrar prácticas
     if (e.isPractice && !includePrac) return false;
 
-    // 3. Filtrar subgrupo de prácticas (si es práctica con grupo específico)
+    // 5. Filtrar subgrupo de prácticas
     if (e.isPractice && myGroup !== 'all' && e.group !== 'all') {
       if (e.group !== myGroup) return false;
     }
@@ -572,6 +683,8 @@ includePracticasSelect.onchange = () => {
 };
 
 groupPracticaSelect.onchange = () => renderUclmPreview();
+courseLevelSelect.onchange = () => renderUclmPreview();
+if (examConvocatoriaSelect) examConvocatoriaSelect.onchange = () => renderUclmPreview();
 
 previewList.onclick = (e) => {
   const delBtn = e.target.closest('.p-del');

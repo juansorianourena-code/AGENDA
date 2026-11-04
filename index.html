@@ -113,15 +113,22 @@
 
         <!-- Filtro por curso / color de examen (para PDFs de toda la carrera) -->
         <div class="config-box" id="courseColorBox">
-          <h4>3. Curso académico / Color en el PDF</h4>
+          <h4>3. Curso o Convocatoria de Examen</h4>
           <div class="row">
-            <label style="flex:1;">Filtrar por curso si vienen varios:
+            <label style="flex:1;">Selecciona tu curso:
               <select id="courseLevelSelect">
-                <option value="auto">Detectar automáticamente (o todo)</option>
-                <option value="1">1º Curso</option>
-                <option value="2" selected>2º Curso</option>
-                <option value="3">3º Curso</option>
-                <option value="4">4º Curso</option>
+                <option value="all">Ver todas las asignaturas</option>
+                <option value="1">1º Curso (Azul claro: Física I, Química, Biología...)</option>
+                <option value="2" selected>2º Curso (Amarillo/Ocre: Motores, Edafología, Fitotecnia...)</option>
+                <option value="3">3º Curso (Verde: Cultivos herbáceos, Arboricultura...)</option>
+                <option value="4">4º Curso (Morado/Rosa: Producción ecológica, Proyectos...)</option>
+              </select>
+            </label>
+            <label style="flex:1;">Convocatoria:
+              <select id="examConvocatoriaSelect">
+                <option value="all">Todas (Ordinaria y Extraordinaria)</option>
+                <option value="ordinaria" selected>Solo Ordinaria (Enero / Mayo-Junio)</option>
+                <option value="extraordinaria">Solo Extraordinaria (Recuperaciones)</option>
               </select>
             </label>
           </div>
