@@ -142,7 +142,7 @@ h1 { margin: 2px 0 0; font-size: 26px; font-weight: 700; letter-spacing: -0.02em
 dialog { border: 1px solid var(--sand); border-radius: 16px; padding: 20px; width: min(420px, 92vw); background: var(--white); }
 dialog::backdrop { background: rgba(17, 17, 17, .35); }
 dialog h2 { margin: 0 0 12px; font-size: 20px; }
-dialog label:not(.sub-pill) { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+dialog label:not(.sub-pill):not(.sg-left):not(.subj-group-name) { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
 dialog input:not([type="checkbox"]), dialog select, dialog textarea { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--sand); border-radius: 8px; background: var(--white); font-size: 16px; }
 .row { display: flex; gap: 10px; }
 .row label { flex: 1; }
@@ -275,19 +275,38 @@ ol.hint li { margin-bottom: 4px; }
 
 /* Editor de grupos por asignatura (Horario UCLM y Ajustes) */
 .subj-group-editor { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
-.sg-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; background: var(--white); border: 1px solid var(--sand); border-radius: 10px; flex-wrap: wrap; }
-.sg-row.off { opacity: 0.5; background: #f8f5ed; }
-.sg-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 150px; cursor: pointer; margin: 0 !important; font-size: 13px !important; color: var(--ink) !important; font-weight: 600; }
-.sg-left input[type="checkbox"] { width: 17px !important; height: 17px !important; margin: 0 !important; flex-shrink: 0; }
+.sg-row, .subj-group-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: var(--white); border: 1px solid var(--sand); border-radius: 10px; flex-wrap: wrap; }
+.sg-row.off, .subj-group-row.off { opacity: 0.5; background: #f8f5ed; }
+.sg-left, .subj-group-name { display: flex !important; align-items: center !important; gap: 8px !important; flex: 1; min-width: 140px; cursor: pointer; margin: 0 !important; font-size: 13px !important; color: var(--ink) !important; font-weight: 600; user-select: none; }
+.sg-left input[type="checkbox"], .subj-group-name input[type="checkbox"] { width: 18px !important; height: 18px !important; margin: 0 !important; flex-shrink: 0; cursor: pointer; }
 .sg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.sg-groups { display: flex; gap: 4px; align-items: center; }
-.sg-btn { border: 1px solid var(--sand); background: #faf7f0; color: var(--muted); border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-.sg-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.sg-groups, .subj-group-pills { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sg-btn, .sg-pill {
+  border: 1px solid var(--sand) !important;
+  background: #faf7f0 !important;
+  color: var(--ink) !important;
+  border-radius: 8px !important;
+  padding: 7px 11px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  touch-action: manipulation !important;
+  transition: transform 0.08s ease, background 0.12s ease !important;
+}
+.sg-btn:active, .sg-pill:active { transform: scale(0.95); }
+.sg-btn.active, .sg-pill.active {
+  background: var(--navy) !important;
+  color: var(--white) !important;
+  border-color: var(--navy) !important;
+  box-shadow: 0 2px 5px rgba(31, 42, 68, 0.25) !important;
+}
 
 /* Selector de colores por asignatura en Ajustes */
 .color-picker-list { display: flex; flex-direction: column; gap: 8px; }
-.cp-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 10px; background: var(--white); border: 1px solid var(--sand); border-radius: 8px; font-size: 13px; font-weight: 500; }
-.cp-row input[type="color"] { width: 36px !important; height: 28px !important; padding: 1px !important; border: 1px solid var(--sand) !important; border-radius: 6px !important; margin: 0 !important; cursor: pointer; flex-shrink: 0; }
+.cp-row, .color-picker-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 10px; background: var(--white); border: 1px solid var(--sand); border-radius: 8px; font-size: 13px; font-weight: 500; }
+.cp-row input[type="color"], .color-picker-item input[type="color"] { width: 42px !important; height: 30px !important; padding: 1px !important; border: 1px solid var(--sand) !important; border-radius: 6px !important; margin: 0 !important; cursor: pointer; flex-shrink: 0; }
 
 /* Vista Mis Asignaturas (Notas + Asistencia a Prácticas) */
 .subjects-wrap { display: flex; flex-direction: column; gap: 14px; padding: 14px; }

@@ -814,9 +814,10 @@ function subjectsView() {
           </div>
           <div class="sg-groups" data-subj-group-card="${esc(subj)}">
             <span style="font-size:11px;color:var(--muted);margin-right:4px;">Mi grupo:</span>
-            ${['G1', 'G2', 'G3'].map(g => `
-              <button type="button" class="sg-btn ${groups.includes(g) ? 'active' : ''}" data-live-subj="${esc(subj)}" data-live-grp="${g}">${g}</button>
-            `).join('')}
+            ${['G1', 'G2', 'G3'].map(g => {
+              const isAct = groups.includes(g);
+              return `<button type="button" class="sg-btn ${isAct ? 'active' : ''}" data-live-subj="${esc(subj)}" data-live-grp="${g}">${isAct ? '✓ ' : ''}${g}</button>`;
+            }).join('')}
           </div>
         </div>
 
@@ -1552,16 +1553,17 @@ function renderSubjectGroupRows(container, subjs, showCheckbox = true) {
     const shortName = SHORT_SUBJECT_NAMES[s] || s;
     const color = getSubjectColor(s, 'uni');
     return `
-      <div class="subj-group-row" data-subj-row="${esc(s)}">
-        <label class="subj-group-name">
+      <div class="sg-row ${enabled ? '' : 'off'}" data-subj-row="${esc(s)}">
+        <label class="sg-left">
           ${showCheckbox ? `<input type="checkbox" class="subj-chk" value="${esc(s)}" ${enabled ? 'checked' : ''}>` : ''}
-          <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${color};flex-shrink:0;"></span>
+          <span class="sg-dot" style="background:${color};"></span>
           <span>${esc(shortName)}</span>
         </label>
-        <div class="subj-group-pills">
-          ${['G1', 'G2', 'G3'].map(g => `
-            <button type="button" class="sg-pill ${activeGroups.includes(g) ? 'active' : ''}" data-subj-g="${esc(s)}" data-g="${g}">${g}</button>
-          `).join('')}
+        <div class="sg-groups">
+          ${['G1', 'G2', 'G3'].map(g => {
+            const isAct = activeGroups.includes(g);
+            return `<button type="button" class="sg-btn ${isAct ? 'active' : ''}" data-subj-g="${esc(s)}" data-g="${g}">${isAct ? '✓ ' : ''}${g}</button>`;
+          }).join('')}
         </div>
       </div>
     `;
@@ -1570,17 +1572,20 @@ function renderSubjectGroupRows(container, subjs, showCheckbox = true) {
   container.onclick = (e) => {
     const gBtn = e.target.closest('[data-subj-g]');
     if (gBtn) {
+      e.preventDefault();
+      e.stopPropagation();
       const subj = gBtn.dataset.subjG;
       const g = gBtn.dataset.g;
-      let cur = state.prefs.subjectGroups[subj] || ['G3'];
+      let cur = Array.isArray(state.prefs.subjectGroups[subj]) ? [...state.prefs.subjectGroups[subj]] : ['G3'];
       if (cur.includes(g)) {
         cur = cur.filter(x => x !== g);
       } else {
         cur = [...cur, g];
       }
       state.prefs.subjectGroups[subj] = cur;
-      gBtn.classList.toggle('active', cur.includes(g));
+      if ($('quickGroupSelect')) $('quickGroupSelect').value = 'custom';
       save();
+      renderSubjectGroupRows(container, subjs, showCheckbox);
       return;
     }
   };
@@ -1590,6 +1595,7 @@ function renderSubjectGroupRows(container, subjs, showCheckbox = true) {
     if (chk) {
       state.prefs.subjectEnabled[chk.value] = chk.checked;
       save();
+      renderSubjectGroupRows(container, subjs, showCheckbox);
     }
   };
 }
@@ -2236,7 +2242,7 @@ $('view').onclick = async e => {
   if (liveGroupBtn) {
     const subj = liveGroupBtn.dataset.liveSubj;
     const g = liveGroupBtn.dataset.liveGrp;
-    let cur = state.prefs.subjectGroups[subj] || ['G3'];
+    let cur = Array.isArray(state.prefs.subjectGroups[subj]) ? [...state.prefs.subjectGroups[subj]] : ['G3'];
     if (cur.includes(g)) {
       cur = cur.filter(x => x !== g);
     } else {
@@ -2244,12 +2250,11 @@ $('view').onclick = async e => {
     }
     state.prefs.subjectGroups[subj] = cur;
     save();
+    render();
     // Si ya tiene clases cargadas en la agenda, actualizamos las prácticas de ese grupo automáticamente
     const hasUniEvents = state.events.some(ev => ev.cal === 'uni' || ev.cal === 'prac');
     if (hasUniEvents) {
       await syncOfficialClassesWithCurrentGroups(true);
-    } else {
-      render();
     }
     return;
   }

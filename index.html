@@ -168,22 +168,23 @@
               <option value="exams_1">Exámenes 1º Curso (Asignaturas sueltas)</option>
             </select>
           </label>
-          <label style="flex:1;" id="quickGlobalGroupWrap">Grupo por defecto:
+          <label style="flex:1;" id="quickGlobalGroupWrap"> Selección rápida de grupo:
             <select id="quickGroupSelect">
-              <option value="G3" selected>Grupo 3 (G3)</option>
-              <option value="G2">Grupo 2 (G2)</option>
-              <option value="G1">Grupo 1 (G1)</option>
-              <option value="all">Todos los grupos</option>
-              <option value="none">Sin prácticas</option>
+              <option value="custom" selected>Personalizado por asignatura (abajo)</option>
+              <option value="G3">Poner todas en Grupo 3 (G3)</option>
+              <option value="G2">Poner todas en Grupo 2 (G2)</option>
+              <option value="G1">Poner todas en Grupo 1 (G1)</option>
+              <option value="all">Poner Todos los grupos (G1+G2+G3)</option>
+              <option value="none">Sin prácticas (Solo teoría)</option>
             </select>
           </label>
         </div>
 
         <div id="quickSubjectsContainer" style="margin-top:12px;">
-          <label style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:4px;">
-            1. Elige tus asignaturas y tu grupo de prácticas en cada una:
-          </label>
-          <p class="hint" style="margin:0 0 8px;font-size:11px;">Puedes poner <b>G2 en Edafología</b> y <b>G3 en las demás</b> (o marcar varios grupos a la vez en una asignatura).</p>
+          <div style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:4px;">
+            1. Toca G1, G2 o G3 en cada asignatura para marcar o desmarcar tu grupo:
+          </div>
+          <p class="hint" style="margin:0 0 8px;font-size:11px;">Los botones en <b>azul oscuro (✓)</b> son los seleccionados. Puedes marcar <b>G2 en Edafología</b> y <b>G3 en las demás</b>.</p>
           <div class="subj-group-editor" id="quickSubjectList"></div>
         </div>
 
