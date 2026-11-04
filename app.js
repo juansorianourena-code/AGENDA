@@ -1,5 +1,16 @@
 'use strict';
 
+const CALENDARS = [
+  { id: 'uni',   name: 'Universidad', color: '#1f2a44' },
+  { id: 'exam',  name: 'Exámenes',    color: '#111111' },
+  { id: 'prac',  name: 'Prácticas',   color: '#5b6785' },
+  { id: 'jmv',   name: 'JMV',         color: '#6b7040' },
+  { id: 'cat',   name: 'Catequesis',  color: '#a3a77a' },
+  { id: 'pers',  name: 'Personal',    color: '#b3a47f' },
+];
+const calById = Object.fromEntries(CALENDARS.map(c => [c.id, c]));
+const getCal = id => calById[id] || calById['uni'] || { id: 'uni', name: 'Universidad', color: '#1f2a44' };
+
 // Paleta armónica por asignatura (respetando blanco, beige, verde oliva, marino, tostado, gris pizarra)
 const SUBJECT_COLORS = {
   'MOTORES': '#1f2a44',                                    // Azul marino elegante
@@ -26,11 +37,11 @@ function getEventColor(e) {
   if (e.cal === 'pers') return '#b3a47f'; // Personal arena tostado
 
   // Si es clase o práctica de la universidad, asignar color propio por asignatura
-  const subj = (e.subject || '').toUpperCase().trim();
+  const subj = (e.subject || e.title || '').toUpperCase().trim();
   for (const [key, color] of Object.entries(SUBJECT_COLORS)) {
     if (subj.includes(key)) return color;
   }
-  return calById[e.cal] ? calById[e.cal].color : '#1f2a44';
+  return getCal(e.cal).color;
 }
 
 const H0 = 6, H1 = 24, HOUR = 48; // horas visibles y alto por hora (px)
@@ -259,7 +270,7 @@ function timeGrid(days) {
     `<div class="${sameDay(d, new Date()) ? 'today' : ''}">${fmt(d, { weekday: 'short' })}<b>${d.getDate()}</b></div>`).join('');
   const allday = days.map(d =>
     `<div>${eventsOn(iso(d)).filter(e => !e.start).map(e =>
-      `<button class="ev chipev" data-id="${e.id}" style="--c:${calById[e.cal].color}">${esc(e.title)}</button>`).join('')}</div>`).join('');
+      `<button class="ev chipev" data-id="${e.id}" style="--c:${getCal(e.cal).color}">${esc(e.title)}</button>`).join('')}</div>`).join('');
   const hours = [...Array(n)].map((_, i) => `<div>${pad(H0 + i)}:00</div>`).join('');
 
   // Algoritmo para evitar solapamientos horizontales entre eventos coincidentes
@@ -402,13 +413,14 @@ function focusView() {
     html += `<div style="padding:12px;color:var(--muted);font-size:13px;">Hoy no tienes clases programadas. ¡Aprovecha para descansar o adelantar!</div>`;
   } else {
     classes.forEach(e => {
+      const cal = getCal(e.cal);
       html += `
-        <div class="focus-item" style="--c:${calById[e.cal].color}">
+        <div class="focus-item" style="--c:${cal.color}">
           <div>
             <b>${e.start || 'Hora sin definir'} ${e.end ? '– ' + e.end : ''}</b>
             <div style="font-weight:600;margin-top:2px;">${esc(e.title)}</div>
           </div>
-          <span class="agenda-cal-badge" style="--c:${calById[e.cal].color}">${calById[e.cal].name}</span>
+          <span class="agenda-cal-badge" style="--c:${cal.color}">${cal.name}</span>
         </div>
       `;
     });
@@ -432,11 +444,12 @@ function focusView() {
     `;
   } else {
     tasksAndExams.forEach(e => {
+      const cal = getCal(e.cal);
       html += `
-        <div class="focus-item" style="--c:${calById[e.cal].color}">
+        <div class="focus-item" style="--c:${cal.color}">
           <div>
             <div style="font-weight:600;">${esc(e.title)}</div>
-            <small style="color:var(--muted);">${e.start ? e.start + ' • ' : ''}${calById[e.cal].name}</small>
+            <small style="color:var(--muted);">${e.start ? e.start + ' • ' : ''}${cal.name}</small>
           </div>
           <button type="button" class="focus-btn-reprogram" data-delay-id="${e.id}" title="Pasar para mañana">Pasar a mañana</button>
         </div>
@@ -525,7 +538,7 @@ function yearView() {
     for (let day = 1; day <= count; day++) {
       const ds = `${y}-${pad(m + 1)}-${pad(day)}`;
       const evs = eventsOn(ds);
-      const c = evs.length ? calById[evs[0].cal].color : '';
+      const c = evs.length ? getCal(evs[0].cal).color : '';
       cells += `<span data-day="${ds}" class="${ds === todayISO() ? 't' : ''} ${evs.length ? 'has' : ''}" style="--c:${c}">${day}</span>`;
     }
     return `<div class="y-month"><h3 data-month="${y}-${pad(m + 1)}-01">${fmt(first, { month: 'long' })}</h3><div class="y-days">${cells}</div></div>`;
@@ -1069,15 +1082,18 @@ if (btnApplyOfficial) {
 function renderUclmPreview() {
   const list = getFilteredEvents();
   detectedCount.textContent = list.length;
-  previewList.innerHTML = list.slice(0, 50).map(e => `
-    <div class="preview-item" style="--c:${calById[e.cal].color}">
-      <div>
-        <div class="p-title">${esc(e.title)} ${e.group !== 'all' ? `[${e.group}]` : ''}</div>
-        <div class="p-meta">${e.date} • ${e.start}–${e.end} • [${calById[e.cal].name}]</div>
+  previewList.innerHTML = list.slice(0, 50).map(e => {
+    const cal = getCal(e.cal);
+    return `
+      <div class="preview-item" style="--c:${cal.color}">
+        <div>
+          <div class="p-title">${esc(e.title)} ${e.group !== 'all' ? `[${e.group}]` : ''}</div>
+          <div class="p-meta">${e.date} • ${e.start}–${e.end} • [${cal.name}]</div>
+        </div>
+        <button type="button" class="p-del" data-id="${e.id}" title="Descartar">✕</button>
       </div>
-      <button type="button" class="p-del" data-id="${e.id}" title="Descartar">✕</button>
-    </div>
-  `).join('') + (list.length > 50 ? `<div style="padding:6px;font-size:12px;color:var(--muted);text-align:center;">...y ${list.length - 50} clases más</div>` : '');
+    `;
+  }).join('') + (list.length > 50 ? `<div style="padding:6px;font-size:12px;color:var(--muted);text-align:center;">...y ${list.length - 50} clases más</div>` : '');
 }
 
 // Eventos de controles de filtro
@@ -1319,11 +1335,6 @@ $('view').onclick = e => {
   if (cell) go(state.view === 'year' ? 'day' : 'day', cell.dataset.day);
 };
 
-load();
-loadBrainDumps();
-render();
-setInterval(() => { if (state.view === 'day' || state.view === 'week') render(); }, 5 * 60 * 1000);
-
 /* ---------- Vaciado Mental (Brain Dump) & Planificador de Estudio ---------- */
 const brainDumpBtn = $('brainDumpBtn');
 const brainDumpDlg = $('brainDumpDlg');
@@ -1361,7 +1372,7 @@ function renderDumpList() {
     return;
   }
   dumpList.innerHTML = brainDumpItems.map(item => {
-    const cal = calById[item.cal] || calById['pers'];
+    const cal = getCal(item.cal);
     return `
       <div class="dump-entry" style="--c:${cal.color}">
         <span class="agenda-cal-badge" style="--c:${cal.color}">${cal.name}</span>
@@ -1577,3 +1588,9 @@ $('view').addEventListener('click', (e) => {
     return;
   }
 });
+
+/* ---------- Inicialización segura ---------- */
+load();
+loadBrainDumps();
+render();
+setInterval(() => { if (state.view === 'day' || state.view === 'week') render(); }, 5 * 60 * 1000);
