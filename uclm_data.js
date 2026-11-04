@@ -166,7 +166,7 @@ window.UCLM_OFFICIAL_DATA = {
       "date": "2026-09-17",
       "start": "10:45",
       "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -301,7 +301,7 @@ window.UCLM_OFFICIAL_DATA = {
       "date": "2026-09-24",
       "start": "10:45",
       "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -382,7 +382,7 @@ window.UCLM_OFFICIAL_DATA = {
       "date": "2026-10-01",
       "start": "10:45",
       "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -1147,7 +1147,7 @@ window.UCLM_OFFICIAL_DATA = {
       "date": "2026-12-09",
       "start": "10:45",
       "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
       "is_prac": false,
       "is_exam": false,
       "group": "all"

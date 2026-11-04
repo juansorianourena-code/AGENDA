@@ -618,11 +618,46 @@ const OFFICIAL_SUBJECTS = [
 
 function cleanSubjectName(rawBlock) {
   const norm = rawBlock.toUpperCase();
+
+  // 1. Coincidencia exacta con lista oficial
   for (const s of OFFICIAL_SUBJECTS) {
-    if (norm.includes(s)) return s;
+    if (norm.includes(s)) {
+      if (s.includes('ESTRUCTURA')) return 'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN';
+      if (s.includes('FITOTECNIA')) return 'FITOTECNIA GENERAL';
+      return s;
+    }
   }
-  // Si no coincide con la lista oficial, ignorar fragmentos de pie de página o texto residual
-  if (/VISITA|TARANC[OÓ]N|AULA|EDIFICIO|BORRADOR|CURSO/i.test(rawBlock)) return '';
+
+  // 2. Coincidencias inteligentes por palabras clave (resuelve cortes de línea en PDFs de la UCLM)
+  if (/GEN[EÉ]TICA/i.test(norm)) return 'GENÉTICA Y APLICACIONES A LA INGENIERÍA';
+  if (/CIENCIA.*MEDIO|MEDIO\s*AMBIENTE|TECNOLOG[IÍ]A.*MEDIO|CIENCIA\s*Y\s*TECNOLOG/i.test(norm)) return 'CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE';
+  if (/EDAFOLOG|CLIMATOLOG/i.test(norm)) return 'EDAFOLOGÍA Y CLIMATOLOGÍA';
+  if (/MOTOR/i.test(norm)) return 'MOTORES';
+  if (/ESTRUCTURA|ELECTRIFICA/i.test(norm)) return 'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN';
+  if (/FITOTECNIA/i.test(norm)) return 'FITOTECNIA GENERAL';
+  if (/F[IÍ]SICA\s*I\b/i.test(norm)) return 'FÍSICA I';
+  if (/F[IÍ]SICA\s*II\b/i.test(norm)) return 'FÍSICA II';
+  if (/QU[IÍ]MICA\s*AGR/i.test(norm)) return 'QUÍMICA AGRÍCOLA';
+  if (/QU[IÍ]MICA/i.test(norm)) return 'QUÍMICA';
+  if (/[AÁ]LGEBRA/i.test(norm)) return 'ÁLGEBRA';
+  if (/BIOLOG[IÍ]A\s*I\b/i.test(norm)) return 'BIOLOGÍA I';
+  if (/BIOLOG[IÍ]A\s*II\b/i.test(norm)) return 'BIOLOGÍA II';
+  if (/EXPRESI[OÓ]N\s*GR[AÁ]FICA/i.test(norm)) return 'EXPRESIÓN GRÁFICA';
+  if (/ESTAD[IÍ]STICA/i.test(norm)) return 'ESTADÍSTICA Y MÉTODOS COMPUTACIONALES';
+  if (/ECUACIONES\s*DIFERENCIALES|C[AÁ]LCULO\s*Y\s*ECUACIONES/i.test(norm)) return 'CÁLCULO Y ECUACIONES DIFERENCIALES';
+  if (/EMPRESA/i.test(norm)) return 'EMPRESA';
+  if (/PRODUCCI[OÓ]N\s*ANIMAL/i.test(norm)) return 'PRODUCCIÓN ANIMAL';
+  if (/CULTIVOS\s*HERB[AÁ]CEOS/i.test(norm)) return 'CULTIVOS HERBÁCEOS';
+  if (/ARBORICULTURA/i.test(norm)) return 'ARBORICULTURA GENERAL. VITICULTURA';
+  if (/PROTECCI[OÓ]N.*CULTIVOS/i.test(norm)) return 'PROTECCIÓN DE CULTIVOS';
+  if (/RIEGO/i.test(norm)) return 'SISTEMAS Y TECNOLOGÍAS DEL RIEGO';
+  if (/MAQUINARIA/i.test(norm)) return 'MAQUINARIA AGRÍCOLA';
+  if (/PRODUCCI[OÓ]N\s*ECOL[OÓ]GICA/i.test(norm)) return 'PRODUCCIÓN ECOLÓGICA E INTEGRADA';
+  if (/PROYECTOS/i.test(norm)) return 'PROYECTOS';
+  if (/HORTICULTURA/i.test(norm)) return 'HORTICULTURA';
+  if (/HIDR[AÁ]ULICA/i.test(norm)) return 'HIDRÁULICA';
+  if (/TOPOGRAF[IÍ]A/i.test(norm)) return 'TOPOGRAFÍA';
+
   return '';
 }
 
@@ -679,6 +714,7 @@ importBtn.onclick = () => {
   uploadPrompt.style.display = 'block';
   parseProgress.style.display = 'none';
   pdfFileInput.value = '';
+  renderQuickSubjectList();
   importDlg.showModal();
 };
 
@@ -865,11 +901,11 @@ async function parseUclmPdf(file) {
             const colTimes = timeEntries.filter(t => t.x >= minX && t.x <= maxX && t.y > colDh.y && t.y < colDh.y + 320);
 
             colTimes.forEach(tEntry => {
-              // Buscar textos que estén en la misma columna y justo arriba de la hora
+              // Buscar textos que estén en la misma columna y correspondan a este bloque horario
               const aboveChunks = atomicItems.filter(it => {
                 const dx = it.x >= minX && it.x <= maxX;
                 const dy = tEntry.y - it.y;
-                return dx && dy > 0 && dy < 75 && !it.isTime;
+                return dx && dy > -15 && dy < 130 && !it.isTime;
               });
 
               aboveChunks.sort((a, b) => a.y - b.y);
@@ -1009,6 +1045,50 @@ function getFilteredEvents() {
   });
 }
 
+// Asignaturas oficiales de 2º curso (1º Cuatrimestre)
+const UCLM_2ND_YEAR_SUBJECTS = [
+  'EDAFOLOGÍA Y CLIMATOLOGÍA',
+  'MOTORES',
+  'GENÉTICA Y APLICACIONES A LA INGENIERÍA',
+  'FITOTECNIA GENERAL',
+  'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN',
+  'CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE'
+];
+
+function renderQuickSubjectList() {
+  const container = $('quickSubjectList');
+  if (!container) return;
+  const courseType = $('quickCourseSelect') ? $('quickCourseSelect').value : '2_cuat1';
+
+  let subjs = UCLM_2ND_YEAR_SUBJECTS;
+  if (courseType === 'exams_1') {
+    subjs = [
+      'FÍSICA I', 'QUÍMICA', 'EXPRESIÓN GRÁFICA', 'ÁLGEBRA', 'BIOLOGÍA I',
+      'ESTADÍSTICA Y MÉTODOS COMPUTACIONALES', 'FÍSICA II', 'CÁLCULO Y ECUACIONES DIFERENCIALES',
+      'BIOLOGÍA II', 'EMPRESA'
+    ];
+  }
+
+  container.innerHTML = subjs.map(s => `
+    <label class="sub-pill checked" data-subj="${esc(s)}">
+      <input type="checkbox" checked value="${esc(s)}">
+      <span>${esc(s)}</span>
+    </label>
+  `).join('');
+
+  container.onchange = (e) => {
+    const chk = e.target;
+    if (!chk) return;
+    const pill = chk.closest('.sub-pill');
+    if (pill) pill.classList.toggle('checked', chk.checked);
+  };
+}
+
+const quickCourseSelect = $('quickCourseSelect');
+if (quickCourseSelect) {
+  quickCourseSelect.onchange = () => renderQuickSubjectList();
+}
+
 // Carga instantánea verificada de la base de datos oficial
 const btnApplyOfficial = $('btnApplyOfficial');
 if (btnApplyOfficial) {
@@ -1021,9 +1101,19 @@ if (btnApplyOfficial) {
       return;
     }
 
+    const checkedSubjs = new Set(
+      Array.from(document.querySelectorAll('#quickSubjectList input[type="checkbox"]:checked')).map(c => c.value)
+    );
+
+    if (checkedSubjs.size === 0) {
+      alert('Por favor marca al menos una asignatura para añadir a tu horario.');
+      return;
+    }
+
     let itemsToAdd = [];
     if (courseType === '2_cuat1') {
       itemsToAdd = data.classes.filter(c => {
+        if (!checkedSubjs.has(c.subject)) return false;
         if (c.is_prac) {
           if (group === 'none') return false;
           if (group !== 'all' && c.group !== 'all' && c.group !== group) return false;
@@ -1047,7 +1137,10 @@ if (btnApplyOfficial) {
       });
     } else if (courseType === 'exams_2' || courseType === 'exams_1') {
       const targetCourse = courseType === 'exams_2' ? 2 : 1;
-      itemsToAdd = data.exams.filter(e => e.course === targetCourse).map(e => {
+      itemsToAdd = data.exams.filter(e => {
+        if (e.course !== targetCourse) return false;
+        return checkedSubjs.has(e.subject);
+      }).map(e => {
         const [st, et] = e.time.split('-');
         return {
           id: crypto.randomUUID(),
@@ -1593,4 +1686,5 @@ $('view').addEventListener('click', (e) => {
 load();
 loadBrainDumps();
 render();
+renderQuickSubjectList();
 setInterval(() => { if (state.view === 'day' || state.view === 'week') render(); }, 5 * 60 * 1000);

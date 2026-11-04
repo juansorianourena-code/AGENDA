@@ -167,11 +167,20 @@
               <option value="G1" selected>Grupo 1 (G1)</option>
               <option value="G2">Grupo 2 (G2)</option>
               <option value="G3">Grupo 3 (G3)</option>
+              <option value="all">Todos los grupos</option>
               <option value="none">Sin prácticas (solo teoría)</option>
             </select>
           </label>
         </div>
-        <div style="margin-top:10px;">
+
+        <div id="quickSubjectsContainer" style="margin-top:12px;">
+          <label style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:6px;">
+            1. Asignaturas que cursas (marca solo las tuyas):
+          </label>
+          <div class="sub-tag-list" id="quickSubjectList"></div>
+        </div>
+
+        <div style="margin-top:12px;">
           <button type="button" class="primary" id="btnApplyOfficial">✨ Aplicar Horario Oficial de mi Curso</button>
         </div>
       </div>
