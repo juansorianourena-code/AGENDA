@@ -93,3 +93,15 @@ dialog input, dialog select, dialog textarea { display: block; width: 100%; marg
   .m-ev { font-size: 0; height: 6px; padding: 0; }
   .app { padding: 16px 10px 40px; }
 }
+
+/* Pie, estado y acceso */
+.foot { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: 12px; color: var(--muted); }
+.link { background: none; border: 0; color: var(--navy); text-decoration: underline; padding: 0; font-size: 12px; }
+.auth { position: fixed; inset: 0; background: var(--beige); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+.auth[hidden] { display: none; }
+.authbox { background: var(--white); border: 1px solid var(--sand); border-radius: 16px; padding: 24px; width: min(380px, 100%); }
+.authbox h1 { margin: 0 0 4px; }
+.authbox .sub { margin-bottom: 16px; color: var(--muted); text-transform: none; }
+.authbox label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.authbox input { display: block; width: 100%; margin-top: 4px; padding: 10px; border: 1px solid var(--sand); border-radius: 8px; font-size: 16px; background: var(--white); }
+.msg { min-height: 18px; margin: 0 0 8px; font-size: 13px; color: var(--navy); }

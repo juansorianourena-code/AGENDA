@@ -11,7 +11,8 @@ const CALENDARS = [
 const calById = Object.fromEntries(CALENDARS.map(c => [c.id, c]));
 
 const H0 = 6, H1 = 24, HOUR = 48; // horas visibles y alto por hora (px)
-const KEY = 'agenda.v1';
+const PREFS = 'agenda.prefs';
+const LEGACY = 'agenda.v1';
 
 const state = {
   view: 'week',
@@ -20,20 +21,140 @@ const state = {
   hidden: new Set(),
 };
 
-/* ---------- Almacenamiento ---------- */
+/* ---------- Preferencias locales (vista y calendarios ocultos) ---------- */
 function load() {
   try {
-    const d = JSON.parse(localStorage.getItem(KEY) || '{}');
-    state.events = d.events || [];
+    const d = JSON.parse(localStorage.getItem(PREFS) || '{}');
     state.hidden = new Set(d.hidden || []);
     if (d.view) state.view = d.view;
   } catch (e) { /* datos corruptos: empezar de cero */ }
 }
 function save() {
-  localStorage.setItem(KEY, JSON.stringify({
-    events: state.events, hidden: [...state.hidden], view: state.view,
-  }));
+  localStorage.setItem(PREFS, JSON.stringify({ hidden: [...state.hidden], view: state.view }));
 }
+
+/* ---------- Nube (Supabase) ---------- */
+const sb = window.supabase.createClient(window.AGENDA_CONFIG.SUPABASE_URL, window.AGENDA_CONFIG.SUPABASE_KEY);
+let uid = null;
+let queue = [];       // cambios pendientes de subir
+let flushing = false;
+
+const cacheKey = () => `agenda.cache.${uid}`;
+const queueKey = () => `agenda.queue.${uid}`;
+const toRow = e => ({
+  id: e.id, title: e.title, cal: e.cal, date: e.date,
+  start_time: e.start || null, end_time: e.end || null, notes: e.notes || '',
+  updated_at: new Date().toISOString(),
+});
+const fromRow = r => ({
+  id: r.id, title: r.title, cal: r.cal, date: r.date,
+  start: (r.start_time || '').slice(0, 5), end: (r.end_time || '').slice(0, 5), notes: r.notes || '',
+});
+function persistLocal() {
+  if (!uid) return;
+  localStorage.setItem(cacheKey(), JSON.stringify(state.events));
+  localStorage.setItem(queueKey(), JSON.stringify(queue));
+}
+function setStatus(t) { document.getElementById('status').textContent = t; }
+
+async function flush() {
+  if (flushing || !uid) return;
+  flushing = true;
+  try {
+    while (queue.length) {
+      const op = queue[0];
+      const { error } = op.op === 'upsert'
+        ? await sb.from('events').upsert(op.row)
+        : await sb.from('events').delete().eq('id', op.id);
+      if (error) throw error;
+      queue.shift(); persistLocal();
+    }
+    setStatus('Guardado en la nube ✓');
+  } catch (e) {
+    setStatus('Sin conexión: se subirá al volver');
+  } finally { flushing = false; }
+}
+
+async function pull() {
+  if (!uid) return;
+  await flush();
+  if (queue.length) return; // no pisar cambios sin subir
+  const { data, error } = await sb.from('events').select('*');
+  if (error) { setStatus('Sin conexión'); return; }
+  state.events = data.map(fromRow);
+  persistLocal(); render();
+  setStatus('Actualizado ✓');
+}
+
+function pushOp(op) { queue.push(op); persistLocal(); flush(); }
+
+/* ---------- Acceso ---------- */
+const authEl = document.getElementById('auth');
+const authMsg = document.getElementById('authMsg');
+const authForm = document.getElementById('authForm');
+
+async function startSession(session) {
+  uid = session.user.id;
+  document.getElementById('who').textContent = session.user.email;
+  authEl.hidden = true;
+  try { state.events = JSON.parse(localStorage.getItem(cacheKey()) || '[]'); } catch (e) { state.events = []; }
+  try { queue = JSON.parse(localStorage.getItem(queueKey()) || '[]'); } catch (e) { queue = []; }
+  render();
+  // Migrar eventos guardados solo en el dispositivo (versión anterior)
+  try {
+    const old = JSON.parse(localStorage.getItem(LEGACY) || 'null');
+    if (old && old.events && old.events.length) {
+      old.events.forEach(e => { state.events.push(e); queue.push({ op: 'upsert', row: toRow(e) }); });
+      persistLocal();
+    }
+    localStorage.removeItem(LEGACY);
+  } catch (e) { /* ignorar */ }
+  await pull();
+  sb.channel('events-sync')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => pull())
+    .subscribe();
+}
+
+function endSession() {
+  uid = null; state.events = []; queue = [];
+  sb.removeAllChannels();
+  document.getElementById('who').textContent = '';
+  setStatus('');
+  render();
+  authEl.hidden = false;
+}
+
+authForm.addEventListener('submit', async ev => {
+  ev.preventDefault();
+  authMsg.textContent = 'Entrando…';
+  const { error } = await sb.auth.signInWithPassword({ email: authForm.email.value.trim(), password: authForm.password.value });
+  authMsg.textContent = error ? 'Correo o contraseña incorrectos.' : '';
+});
+document.getElementById('signupBtn').onclick = async () => {
+  if (!authForm.reportValidity()) return;
+  authMsg.textContent = 'Creando cuenta…';
+  const { data, error } = await sb.auth.signUp({ email: authForm.email.value.trim(), password: authForm.password.value });
+  if (error) authMsg.textContent = error.message;
+  else if (!data.session) authMsg.textContent = 'Cuenta creada. Revisa tu correo y confirma el enlace; luego pulsa Entrar.';
+};
+document.getElementById('signout').onclick = async () => {
+  await flush();
+  if (queue.length && !confirm('Hay cambios sin subir a la nube. Si sales ahora se perderán. ¿Salir igualmente?')) return;
+  const id = uid;
+  await sb.auth.signOut();
+  localStorage.removeItem(`agenda.cache.${id}`);
+  localStorage.removeItem(`agenda.queue.${id}`);
+};
+
+sb.auth.onAuthStateChange((event, session) => {
+  if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session.user.id !== uid) {
+    setTimeout(() => startSession(session), 0);
+  } else if (event === 'SIGNED_OUT') endSession();
+  else if (event === 'INITIAL_SESSION' && !session) authEl.hidden = false;
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
+window.addEventListener('online', () => pull());
+setInterval(() => pull(), 60 * 1000);
 
 /* ---------- Utilidades de fecha ---------- */
 const pad = n => String(n).padStart(2, '0');
@@ -195,14 +316,18 @@ form.addEventListener('submit', () => {
   };
   if (!data.title || !data.date) return;
   if (data.start && data.end && mins(data.end) <= mins(data.start)) data.end = '';
-  if (editingId) Object.assign(state.events.find(e => e.id === editingId), data);
-  else state.events.push({ id: crypto.randomUUID(), ...data });
-  save(); render();
+  let saved;
+  if (editingId) { saved = state.events.find(e => e.id === editingId); Object.assign(saved, data); }
+  else { saved = { id: crypto.randomUUID(), ...data }; state.events.push(saved); }
+  pushOp({ op: 'upsert', row: toRow(saved) });
+  render();
 });
 $('cancel').onclick = () => dlg.close();
 $('del').onclick = () => {
-  state.events = state.events.filter(e => e.id !== editingId);
-  save(); dlg.close(); render();
+  const id = editingId;
+  state.events = state.events.filter(e => e.id !== id);
+  pushOp({ op: 'delete', id });
+  dlg.close(); render();
 };
 
 /* ---------- Eventos de la interfaz ---------- */
