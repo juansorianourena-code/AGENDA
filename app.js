@@ -71,7 +71,10 @@ async function flush() {
     }
     setStatus('Guardado en la nube ✓');
   } catch (e) {
-    setStatus('Sin conexión: se subirá al volver');
+    const offline = !navigator.onLine || /fetch|network/i.test(String(e && e.message));
+    setStatus(offline
+      ? 'Sin internet: se subirá solo al volver la conexión'
+      : 'No se pudo guardar en la nube: ' + (e && e.message ? e.message : 'error desconocido'));
   } finally { flushing = false; }
 }
 
@@ -80,7 +83,7 @@ async function pull() {
   await flush();
   if (queue.length) return; // no pisar cambios sin subir
   const { data, error } = await sb.from('events').select('*');
-  if (error) { setStatus('Sin conexión'); return; }
+  if (error) { setStatus(navigator.onLine ? 'No se pudo leer de la nube: ' + error.message : 'Sin internet'); return; }
   state.events = data.map(fromRow);
   persistLocal(); render();
   setStatus('Actualizado ✓');
