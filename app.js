@@ -712,21 +712,40 @@ importConfirm.onclick = async () => {
   alert(`¡Listo! Se han añadido ${toAdd.length} clases y prácticas a tu agenda y sincronizado en todos tus dispositivos.`);
 };
 
-/* ---------- Apple Calendar Feed Dialog ---------- */
+/* ---------- Apple Calendar Feed Dialog con Selección de Categorías ---------- */
 const feedDlg = $('feedDlg');
 const feedUrlInput = $('feedUrl');
 const feedSubLink = $('feedSub');
+const feedCalsToggles = $('feedCalsToggles');
+const feedSaveState = $('feedSaveState');
+
+let activeFeedCals = new Set(['exam', 'prac', 'jmv', 'cat', 'pers']); // uni desmarcado por defecto para no saturar
+
+async function loadFeedTokenData() {
+  if (!uid) return { token: null, allowed: null };
+  const { data } = await sb.from('feed_tokens').select('token, allowed_cals').single();
+  if (data) {
+    if (data.allowed_cals) {
+      activeFeedCals = new Set(data.allowed_cals.split(',').filter(Boolean));
+    }
+    return { token: data.token, allowed: data.allowed_cals };
+  }
+  return { token: null, allowed: null };
+}
 
 async function getOrCreateFeedToken(forceNew = false) {
   if (!uid) return null;
-  if (!forceNew) {
-    const { data } = await sb.from('feed_tokens').select('token').single();
-    if (data && data.token) return data.token;
-  }
-  // Generar nuevo token
+  const existing = await loadFeedTokenData();
+  if (existing.token && !forceNew) return existing.token;
+
   const newToken = Array.from(crypto.getRandomValues(new Uint8Array(24)))
     .map(b => b.toString(16).padStart(2, '0')).join('');
-  const { error } = await sb.from('feed_tokens').upsert({ user_id: uid, token: newToken });
+  const allowedStr = Array.from(activeFeedCals).join(',');
+  const { error } = await sb.from('feed_tokens').upsert({
+    user_id: uid,
+    token: newToken,
+    allowed_cals: allowedStr
+  });
   if (error) {
     alert('Error al generar enlace de Apple Calendar: ' + error.message);
     return null;
@@ -734,9 +753,47 @@ async function getOrCreateFeedToken(forceNew = false) {
   return newToken;
 }
 
+function renderFeedCheckboxes() {
+  feedCalsToggles.innerHTML = CALENDARS.map(c => {
+    const isChecked = activeFeedCals.has(c.id);
+    return `
+      <label class="sub-pill ${isChecked ? 'checked' : ''}" style="--c:${c.color}">
+        <input type="checkbox" value="${c.id}" ${isChecked ? 'checked' : ''}>
+        <i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c.color};margin-right:4px;"></i>
+        ${c.name}
+      </label>
+    `;
+  }).join('');
+}
+
+feedCalsToggles.onchange = async (e) => {
+  const chk = e.target;
+  if (!chk) return;
+  const pill = chk.closest('.sub-pill');
+  if (chk.checked) {
+    activeFeedCals.add(chk.value);
+    pill.classList.add('checked');
+  } else {
+    activeFeedCals.delete(chk.value);
+    pill.classList.remove('checked');
+  }
+
+  feedSaveState.textContent = 'Actualizando filtros en la nube...';
+  const allowedStr = Array.from(activeFeedCals).join(',');
+  const { error } = await sb.from('feed_tokens').update({ allowed_cals: allowedStr }).eq('user_id', uid);
+  if (!error) {
+    feedSaveState.textContent = '¡Filtros actualizados! Apple Calendar se adaptará automáticamente.';
+  } else {
+    feedSaveState.textContent = 'Error al guardar filtro: ' + error.message;
+  }
+};
+
 async function openFeedDialog() {
   feedUrlInput.value = 'Cargando enlace...';
+  feedSaveState.textContent = 'Sincronización personalizada activa';
   feedDlg.showModal();
+  await loadFeedTokenData();
+  renderFeedCheckboxes();
   const token = await getOrCreateFeedToken(false);
   if (!token) return;
   const httpUrl = `${window.location.origin}/calendar/${token}.ics`;

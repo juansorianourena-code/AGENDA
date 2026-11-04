@@ -154,20 +154,27 @@
   </dialog>
 
   <dialog id="feedDlg">
-    <h2>Apple Calendar</h2>
-    <p class="hint">Suscríbete una vez y todo lo que añadas aquí aparecerá en tu calendario de Apple, con avisos incluidos.</p>
+    <h2>Sincronización con Apple Calendar</h2>
+    <p class="hint">Elige qué categorías quieres que aparezcan en tu aplicación Calendario de Apple. Por ejemplo, puedes desactivar "Clases" para que no te sature el móvil y dejar solo tus exámenes o prácticas.</p>
+    
+    <div class="config-box" style="margin-bottom:14px;">
+      <h4>Categorías activas para Apple Calendar:</h4>
+      <div class="sub-tag-list" id="feedCalsToggles"></div>
+      <small class="muted-text" id="feedSaveState" style="display:block;margin-top:6px;color:var(--olive);">Los cambios se aplican al instante en tu suscripción.</small>
+    </div>
+
     <ol class="hint">
       <li>Pulsa <b>Suscribirme</b> desde el iPhone (o copia el enlace).</li>
-      <li>Confirma <b>Suscribirse</b> en Calendario.</li>
+      <li>Confirma <b>Suscribirse</b> en la app Calendario.</li>
     </ol>
     <input id="feedUrl" readonly>
     <div class="actions">
       <button type="button" class="ghost" id="feedReset">Generar enlace nuevo</button>
       <span class="grow"></span>
-      <button type="button" class="ghost" id="feedCopy">Copiar</button>
+      <button type="button" class="ghost" id="feedCopy">Copiar enlace</button>
       <a class="primary btn" id="feedSub" href="#">Suscribirme</a>
     </div>
-    <p class="hint small">El enlace es privado: quien lo tenga puede ver tu agenda. Si lo compartes sin querer, genera uno nuevo. Apple actualiza los calendarios suscritos cada pocos minutos, no al instante.</p>
+    <p class="hint small">Nota: Apple Calendar refresca las suscripciones automáticamente cada pocos minutos. Cuando desmarques aquí una categoría, Apple la retirará en su siguiente sincronización.</p>
     <div class="actions"><span class="grow"></span><button type="button" class="ghost" id="feedClose">Cerrar</button></div>
   </dialog>
 
