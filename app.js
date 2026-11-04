@@ -377,7 +377,9 @@ function timeGrid(days) {
   }).join('');
 
   const isWeek = cols === 7;
-  return `<div class="tg-wrap" style="--cols:${cols};--n:${n}">
+  return `
+    <div class="grid-help-banner">💡 <b>Toca cualquier clase</b> para cambiar el día, la hora o borrarla.</div>
+    <div class="tg-wrap" style="--cols:${cols};--n:${n}">
     <div class="tg-head ${isWeek ? 'week-grid' : ''}"><div></div>${head}</div>
     <div class="tg-allday ${isWeek ? 'week-grid' : ''}"><div></div>${allday}</div>
     <div class="tg-body ${isWeek ? 'week-grid' : ''}"><div class="tg-hours">${hours}</div>${colsHtml}</div>
@@ -496,6 +498,9 @@ function agendaView() {
             <div class="agenda-detail">
               <div class="agenda-title">${esc(e.title)}</div>
               <span class="agenda-cal-badge" style="--c:${evColor}">${cal.name}</span>
+            </div>
+            <div class="agenda-action-hint">
+              <span class="agenda-edit-pill">✏️ Modificar</span>
             </div>
           </button>
         `;
@@ -763,14 +768,26 @@ async function parseUclmPdf(file) {
     // Buscar cabeceras de columnas con fechas: "04-ene", "08-sep", "11-ene", etc.
     const dateHeaders = [];
     items.forEach(it => {
-      const dm = it.str.trim().match(/^(\d{1,2})-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)$/i);
-      if (dm) {
-        const day = parseInt(dm[1], 10);
-        const month = MONTHS_MAP[dm[2].toLowerCase()];
-        // Los meses de enero a julio en convocatorias ordinarias pertenecen al año siguiente (ej: 2027)
+      const str = (it.str || '').trim();
+      if (!str) return;
+      const matches = [...str.matchAll(/(\d{1,2})-(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)/gi)];
+      if (matches.length === 1) {
+        const day = parseInt(matches[0][1], 10);
+        const month = MONTHS_MAP[matches[0][2].toLowerCase()];
         const year = month >= 8 ? academicYear : academicYear + 1;
         const isoDate = `${year}-${pad(month + 1)}-${pad(day)}`;
-        dateHeaders.push({ x: it.transform[4], y: it.transform[5], date: isoDate, str: it.str.trim() });
+        dateHeaders.push({ x: it.transform[4], y: it.transform[5], date: isoDate, str: matches[0][0] });
+      } else if (matches.length > 1) {
+        // En PDFs donde las columnas de la semana vienen agrupadas en un solo bloque
+        const standardXs = [169, 299, 427, 552, 668];
+        matches.forEach((m, idx) => {
+          const day = parseInt(m[1], 10);
+          const month = MONTHS_MAP[m[2].toLowerCase()];
+          const year = month >= 8 ? academicYear : academicYear + 1;
+          const isoDate = `${year}-${pad(month + 1)}-${pad(day)}`;
+          const xPos = idx < standardXs.length ? standardXs[idx] : it.transform[4] + idx * 125;
+          dateHeaders.push({ x: xPos, y: it.transform[5], date: isoDate, str: m[0] });
+        });
       }
     });
 
@@ -1160,6 +1177,20 @@ if (btnApplyOfficial) {
       return;
     }
 
+    // Si ya existen clases universitarias anteriores, ofrecer reemplazarlas limpiamente
+    const existingUni = state.events.filter(e => e.cal === 'uni' || e.cal === 'prac' || e.cal === 'exam');
+    if (existingUni.length > 0) {
+      const replace = confirm(
+        `Ya tienes ${existingUni.length} clases o exámenes en tu agenda.\n\n¿Quieres sustituirlos por el nuevo horario oficial para que queden 100% limpios y sin duplicados? (Recomendado)`
+      );
+      if (replace) {
+        for (const ev of existingUni) {
+          pushOp({ op: 'delete', id: ev.id });
+        }
+        state.events = state.events.filter(e => e.cal !== 'uni' && e.cal !== 'prac' && e.cal !== 'exam');
+      }
+    }
+
     // Volcar a la agenda y a la nube
     for (const ev of itemsToAdd) {
       state.events.push(ev);
@@ -1370,11 +1401,42 @@ function openDialog(ev, defaults = {}) {
   const v = ev || { title: '', cal: 'uni', date: iso(state.date), start: '', end: '', notes: '', ...defaults };
   form.title.value = v.title; form.cal.value = v.cal; form.date.value = v.date;
   form.start.value = v.start || ''; form.end.value = v.end || ''; form.notes.value = v.notes || '';
-  $('dlgTitle').textContent = ev ? 'Editar evento' : 'Nuevo evento';
+  $('dlgTitle').textContent = ev ? '✏️ Modificar clase o evento' : '+ Nuevo evento';
   $('del').style.display = ev ? '' : 'none';
   dlg.showModal();
   if (!ev) form.title.focus();
 }
+
+const dlgDayPrev = $('dlgDayPrev');
+if (dlgDayPrev) {
+  dlgDayPrev.onclick = () => {
+    if (!form.date.value) form.date.value = todayISO();
+    const cur = parse(form.date.value);
+    cur.setDate(cur.getDate() - 1);
+    form.date.value = iso(cur);
+  };
+}
+const dlgDayToday = $('dlgDayToday');
+if (dlgDayToday) {
+  dlgDayToday.onclick = () => {
+    form.date.value = todayISO();
+  };
+}
+const dlgDayNext = $('dlgDayNext');
+if (dlgDayNext) {
+  dlgDayNext.onclick = () => {
+    if (!form.date.value) form.date.value = todayISO();
+    const cur = parse(form.date.value);
+    cur.setDate(cur.getDate() + 1);
+    form.date.value = iso(cur);
+  };
+}
+document.querySelectorAll('.dlg-quick-slots .slot-pill').forEach(btn => {
+  btn.onclick = () => {
+    form.start.value = btn.dataset.s;
+    form.end.value = btn.dataset.e;
+  };
+});
 
 form.addEventListener('submit', () => {
   const data = {

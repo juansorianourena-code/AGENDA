@@ -74,14 +74,21 @@ h1 { margin: 2px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.02em
 .agenda-day-header.today h3 { color: var(--navy); }
 .agenda-day-header .day-tag { font-size: 11px; color: var(--muted); }
 .agenda-day-items { display: flex; flex-direction: column; }
-.agenda-item { display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--beige); background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; cursor: pointer; align-items: flex-start; }
+.agenda-item { display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--beige); background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; cursor: pointer; align-items: center; width: 100%; transition: background .12s; }
+.agenda-item:hover, .agenda-item:active { background: #faf7f0; }
 .agenda-item:last-child { border-bottom: 0; }
 .agenda-time { min-width: 85px; font-size: 12px; font-weight: 600; color: var(--muted); }
 .agenda-detail { flex: 1; }
 .agenda-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
 .agenda-cal-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; color: var(--white); background: var(--c); font-weight: 500; }
+.agenda-action-hint { margin-left: 8px; }
+.agenda-edit-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: var(--navy); border: 1px solid var(--sand); border-radius: 6px; padding: 4px 8px; background: #faf8f5; }
+.agenda-item:hover .agenda-edit-pill { background: #ede7d8; border-color: var(--navy); }
 .agenda-break-notice { padding: 6px 14px; font-size: 11px; color: var(--olive); background: #f5f7f0; display: flex; align-items: center; gap: 6px; border-bottom: 1px dashed var(--sand); }
 .agenda-empty { padding: 24px; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* Banner de ayuda interactivo */
+.grid-help-banner { padding: 8px 14px; margin: 10px 16px 0; font-size: 12px; color: var(--navy); background: #f7f3ea; border: 1px solid var(--sand); border-radius: 8px; display: flex; align-items: center; gap: 8px; }
 
 /* Mes */
 .m-head, .m-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
@@ -112,8 +119,19 @@ dialog input:not([type="checkbox"]), dialog select, dialog textarea { display: b
 .row label { flex: 1; }
 .actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 .grow { flex: 1; }
-.primary { background: var(--navy); color: var(--white); border: 0; border-radius: 8px; padding: 9px 16px; }
-.ghost { background: none; border: 1px solid var(--sand); border-radius: 8px; padding: 9px 14px; }
+.primary { background: var(--navy); color: var(--white); border: 0; border-radius: 8px; padding: 9px 16px; cursor: pointer; }
+.ghost { background: none; border: 1px solid var(--sand); border-radius: 8px; padding: 9px 14px; cursor: pointer; }
+
+/* Controles rápidos de modificación en el diálogo */
+.dlg-quick-row { display: flex; gap: 6px; margin: 4px 0 12px; }
+.dlg-quick-btn { flex: 1; background: #faf7f0; border: 1px solid var(--sand); border-radius: 6px; padding: 6px 4px; font-size: 11px; font-weight: 500; color: var(--ink); cursor: pointer; text-align: center; }
+.dlg-quick-btn:hover { background: #eee7d5; }
+.dlg-quick-slots { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 12px; }
+.dlg-quick-slots span { width: 100%; font-size: 11px; color: var(--muted); }
+.slot-pill { background: #faf7f0; border: 1px solid var(--sand); border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; color: var(--navy); }
+.slot-pill:hover { background: #eee7d5; border-color: var(--navy); }
+.btn-danger-prominent { background: #fdf2f2; color: #a33; border: 1px solid #f0cccc; border-radius: 8px; padding: 9px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-danger-prominent:hover { background: #a33; color: #fff; border-color: #a33; }
 
 @media (max-width: 600px) {
   h1 { font-size: 26px; }

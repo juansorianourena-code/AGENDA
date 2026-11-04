@@ -2,15 +2,6 @@ window.UCLM_OFFICIAL_DATA = {
   "classes": [
     {
       "date": "2026-09-09",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-09-09",
       "start": "10:45",
       "end": "12:15",
       "subject": "MOTORES",
@@ -28,6 +19,33 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-09-09",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-10",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-10",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-09-10",
       "start": "9:00",
       "end": "10:30",
@@ -37,25 +55,16 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-10",
+      "date": "2026-09-11",
       "start": "10:45",
       "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
     },
     {
-      "date": "2026-09-10",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-09-10",
+      "date": "2026-09-11",
       "start": "12:30",
       "end": "14:00",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
@@ -74,15 +83,6 @@ window.UCLM_OFFICIAL_DATA = {
     },
     {
       "date": "2026-09-14",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-09-14",
       "start": "10:45",
       "end": "12:15",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
@@ -100,10 +100,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-15",
+      "date": "2026-09-14",
       "start": "9:00",
       "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -127,19 +127,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-16",
+      "date": "2026-09-15",
       "start": "9:00",
       "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-09-16",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "MOTORES",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -163,6 +154,15 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-09-16",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-09-17",
       "start": "10:45",
       "end": "12:15",
@@ -172,19 +172,46 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-18",
+      "date": "2026-09-17",
       "start": "12:30",
       "end": "13:30",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-17",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-18",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-18",
+      "start": "12:30",
+      "end": "14:00",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
     },
     {
-      "date": "2026-09-21",
+      "date": "2026-09-18",
       "start": "9:00",
       "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -217,10 +244,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G2"
     },
     {
-      "date": "2026-09-22",
+      "date": "2026-09-21",
       "start": "9:00",
       "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -253,19 +280,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G1"
     },
     {
-      "date": "2026-09-23",
+      "date": "2026-09-22",
       "start": "9:00",
       "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-09-23",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "MOTORES",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -298,10 +316,46 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G3"
     },
     {
+      "date": "2026-09-23",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-09-24",
       "start": "10:45",
       "end": "12:15",
       "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-24",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-24",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-25",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -316,6 +370,15 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-09-25",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-09-28",
       "start": "12:30",
       "end": "14:00",
@@ -325,9 +388,18 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-29",
+      "date": "2026-09-28",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-09-28",
       "start": "9:00",
-      "end": "10:30",
+      "end": "12:15",
       "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": true,
       "is_exam": false,
@@ -352,11 +424,20 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-09-30",
+      "date": "2026-09-29",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-09-29",
       "start": "9:00",
       "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
       "is_exam": false,
       "group": "all"
     },
@@ -374,6 +455,24 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-09-30",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-09-30",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -388,19 +487,46 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-02",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "date": "2026-10-01",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
     },
     {
-      "date": "2026-10-05",
+      "date": "2026-10-01",
+      "start": "16:00",
+      "end": "18:30",
+      "subject": "MOTORES",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-01",
       "start": "9:00",
       "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-02",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-02",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -419,6 +545,33 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-05",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-06",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-06",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -433,42 +586,6 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-06",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-06",
-      "start": "12:30",
-      "end": "14:00",
-      "subject": "FITOTECNIA GENERAL",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-07",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-07",
-      "start": "11:45",
-      "end": "12:15",
-      "subject": "MOTORES",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
       "date": "2026-10-07",
       "start": "11:45",
       "end": "12:15",
@@ -487,43 +604,7 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-08",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "FITOTECNIA GENERAL",
-      "is_prac": true,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-13",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "MOTORES",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-13",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-13",
-      "start": "12:30",
-      "end": "14:00",
-      "subject": "FITOTECNIA GENERAL",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-14",
+      "date": "2026-10-07",
       "start": "9:00",
       "end": "10:30",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
@@ -532,6 +613,96 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-10-08",
+      "start": "11:45",
+      "end": "12:15",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-08",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-08",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-09",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-09",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-09",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-13",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-13",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-13",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-10-13",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-10-14",
       "start": "10:45",
       "end": "12:15",
@@ -545,6 +716,24 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-14",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-10-14",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -559,16 +748,52 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-16",
+      "date": "2026-10-15",
       "start": "12:30",
       "end": "14:00",
       "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-15",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-10-15",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-16",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-16",
+      "start": "12:30",
+      "end": "13:30",
+      "subject": "FITOTECNIA GENERAL",
       "is_prac": false,
       "is_exam": true,
       "group": "all"
     },
     {
-      "date": "2026-10-19",
+      "date": "2026-10-16",
       "start": "9:00",
       "end": "10:30",
       "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
@@ -595,10 +820,19 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-20",
+      "date": "2026-10-19",
+      "start": "16:00",
+      "end": "17:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-10-19",
       "start": "9:00",
       "end": "10:30",
-      "subject": "MOTORES",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -622,18 +856,27 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-10-21",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
+      "date": "2026-10-20",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
       "is_exam": false,
-      "group": "all"
+      "group": "G3"
     },
     {
-      "date": "2026-10-21",
-      "start": "10:45",
-      "end": "12:15",
+      "date": "2026-10-20",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-10-20",
+      "start": "9:00",
+      "end": "10:30",
       "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
@@ -653,6 +896,33 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-21",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-10-21",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-10-21",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -667,6 +937,51 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-10-22",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-22",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-10-22",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-10-22",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-23",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-10-23",
       "start": "12:30",
       "end": "14:00",
@@ -676,10 +991,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G1"
     },
     {
-      "date": "2026-10-26",
+      "date": "2026-10-23",
       "start": "9:00",
       "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -707,12 +1022,12 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "16:00",
       "end": "20:30",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
+      "is_prac": true,
       "is_exam": false,
-      "group": "all"
+      "group": "G2"
     },
     {
-      "date": "2026-10-27",
+      "date": "2026-10-26",
       "start": "9:00",
       "end": "10:30",
       "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
@@ -748,10 +1063,10 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G1"
     },
     {
-      "date": "2026-10-28",
+      "date": "2026-10-27",
       "start": "9:00",
       "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -760,17 +1075,8 @@ window.UCLM_OFFICIAL_DATA = {
       "date": "2026-10-28",
       "start": "9:00",
       "end": "14:00",
-      "subject": "FITOTECNIA GENERAL",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": true,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-10-29",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
       "is_exam": false,
       "group": "all"
     },
@@ -779,6 +1085,15 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "10:45",
       "end": "12:15",
       "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-10-29",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
       "is_prac": true,
       "is_exam": false,
       "group": "all"
@@ -793,6 +1108,15 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "G3"
     },
     {
+      "date": "2026-10-29",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-10-30",
       "start": "10:45",
       "end": "12:15",
@@ -809,6 +1133,42 @@ window.UCLM_OFFICIAL_DATA = {
       "is_prac": false,
       "is_exam": false,
       "group": "all"
+    },
+    {
+      "date": "2026-10-30",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-03",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-03",
+      "start": "12:30",
+      "end": "13:45",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": true,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-03",
+      "start": "16:00",
+      "end": "18:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
     },
     {
       "date": "2026-11-03",
@@ -821,12 +1181,30 @@ window.UCLM_OFFICIAL_DATA = {
     },
     {
       "date": "2026-11-04",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
+    },
+    {
+      "date": "2026-11-04",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-04",
+      "start": "16:00",
+      "end": "18:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
     },
     {
       "date": "2026-11-04",
@@ -839,12 +1217,84 @@ window.UCLM_OFFICIAL_DATA = {
     },
     {
       "date": "2026-11-05",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-05",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-05",
+      "start": "16:00",
+      "end": "18:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-11-05",
       "start": "9:00",
       "end": "10:30",
       "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
+    },
+    {
+      "date": "2026-11-06",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-06",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": true,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-06",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-09",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-09",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": true,
+      "group": "G1"
     },
     {
       "date": "2026-11-09",
@@ -853,33 +1303,6 @@ window.UCLM_OFFICIAL_DATA = {
       "subject": "MOTORES",
       "is_prac": false,
       "is_exam": true,
-      "group": "all"
-    },
-    {
-      "date": "2026-11-09",
-      "start": "10:45",
-      "end": "12:15",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-11-09",
-      "start": "12:30",
-      "end": "14:00",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": false,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-11-10",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
-      "is_prac": false,
-      "is_exam": false,
       "group": "all"
     },
     {
@@ -892,10 +1315,37 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-11",
+      "date": "2026-11-10",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-10",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-10",
+      "start": "16:00",
+      "end": "20:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-10",
       "start": "9:00",
       "end": "10:30",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -910,10 +1360,37 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-12",
+      "date": "2026-11-11",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-11",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-11-11",
+      "start": "16:00",
+      "end": "20:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-11",
       "start": "9:00",
       "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -932,6 +1409,33 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-12",
+      "start": "16:00",
+      "end": "19:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-12",
+      "start": "16:00",
+      "end": "20:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-11-12",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "MOTORES",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -946,12 +1450,30 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-16",
+      "date": "2026-11-13",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-13",
       "start": "9:00",
       "end": "10:30",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
-      "is_exam": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-16",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": false,
+      "is_exam": false,
       "group": "all"
     },
     {
@@ -964,28 +1486,73 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-17",
+      "date": "2026-11-16",
       "start": "9:00",
       "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
-      "is_exam": false,
+      "is_exam": true,
       "group": "all"
     },
     {
       "date": "2026-11-17",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
-      "is_prac": false,
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
       "is_exam": false,
-      "group": "all"
+      "group": "G1"
     },
     {
       "date": "2026-11-17",
       "start": "12:30",
       "end": "14:00",
       "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-17",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G3"
+    },
+    {
+      "date": "2026-11-17",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-18",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-18",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-18",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
       "is_prac": true,
       "is_exam": false,
       "group": "G1"
@@ -1000,22 +1567,31 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-18",
+      "date": "2026-11-19",
       "start": "10:45",
       "end": "12:15",
       "subject": "MOTORES",
-      "is_prac": false,
+      "is_prac": true,
       "is_exam": false,
       "group": "all"
     },
     {
-      "date": "2026-11-18",
+      "date": "2026-11-19",
       "start": "12:30",
       "end": "14:00",
-      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
-      "is_prac": false,
+      "subject": "MOTORES",
+      "is_prac": true,
       "is_exam": false,
       "group": "all"
+    },
+    {
+      "date": "2026-11-19",
+      "start": "15:30",
+      "end": "20:30",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
     },
     {
       "date": "2026-11-19",
@@ -1027,27 +1603,36 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-11-19",
+      "date": "2026-11-20",
       "start": "10:45",
       "end": "12:15",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": true,
-      "is_exam": false,
-      "group": "all"
-    },
-    {
-      "date": "2026-11-19",
-      "start": "12:30",
-      "end": "14:00",
-      "subject": "MOTORES",
-      "is_prac": true,
-      "is_exam": false,
+      "is_prac": false,
+      "is_exam": true,
       "group": "all"
     },
     {
       "date": "2026-11-20",
       "start": "12:30",
       "end": "14:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-20",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-23",
+      "start": "10:45",
+      "end": "12:15",
       "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
@@ -1063,6 +1648,42 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-11-23",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-24",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-24",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-11-24",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-11-25",
       "start": "10:45",
       "end": "12:15",
@@ -1081,11 +1702,74 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
-      "date": "2026-12-01",
+      "date": "2026-11-25",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-26",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-26",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-26",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G1"
+    },
+    {
+      "date": "2026-11-27",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-27",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-27",
       "start": "9:00",
       "end": "10:30",
       "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-11-30",
+      "start": "9:00",
+      "end": "14:00",
+      "subject": "FITOTECNIA GENERAL",
+      "is_prac": true,
       "is_exam": false,
       "group": "all"
     },
@@ -1103,6 +1787,33 @@ window.UCLM_OFFICIAL_DATA = {
       "start": "12:30",
       "end": "14:00",
       "subject": "FITOTECNIA GENERAL",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-01",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-02",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-02",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
       "is_prac": false,
       "is_exam": false,
       "group": "all"
@@ -1118,12 +1829,48 @@ window.UCLM_OFFICIAL_DATA = {
     },
     {
       "date": "2026-12-03",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-03",
       "start": "12:30",
       "end": "14:00",
       "subject": "FITOTECNIA GENERAL",
       "is_prac": false,
       "is_exam": true,
       "group": "all"
+    },
+    {
+      "date": "2026-12-03",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-04",
+      "start": "10:45",
+      "end": "12:15",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
+    },
+    {
+      "date": "2026-12-04",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "G2"
     },
     {
       "date": "2026-12-04",
@@ -1133,15 +1880,6 @@ window.UCLM_OFFICIAL_DATA = {
       "is_prac": true,
       "is_exam": false,
       "group": "G2"
-    },
-    {
-      "date": "2026-12-09",
-      "start": "9:00",
-      "end": "10:30",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "is_prac": true,
-      "is_exam": false,
-      "group": "all"
     },
     {
       "date": "2026-12-09",
@@ -1162,11 +1900,56 @@ window.UCLM_OFFICIAL_DATA = {
       "group": "all"
     },
     {
+      "date": "2026-12-09",
+      "start": "9:00",
+      "end": "10:30",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-10",
+      "start": "12:30",
+      "end": "14:00",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-10",
+      "start": "9:00",
+      "end": "12:30",
+      "subject": "MOTORES",
+      "is_prac": false,
+      "is_exam": true,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-11",
+      "start": "9:00",
+      "end": "12:15",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "is_prac": true,
+      "is_exam": false,
+      "group": "all"
+    },
+    {
       "date": "2026-12-14",
       "start": "12:00",
       "end": "13:30",
       "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
       "is_prac": false,
+      "is_exam": true,
+      "group": "all"
+    },
+    {
+      "date": "2026-12-16",
+      "start": "16:00",
+      "end": "17:00",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "is_prac": true,
       "is_exam": true,
       "group": "all"
     },

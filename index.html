@@ -299,20 +299,36 @@
 
   <dialog id="dlg">
     <form method="dialog" id="form">
-      <h2 id="dlgTitle">Nuevo evento</h2>
-      <label>Título <input name="title" required autocomplete="off"></label>
-      <label>Calendario <select name="cal"></select></label>
-      <label>Fecha <input type="date" name="date" required></label>
-      <div class="row">
-        <label>Inicio <input type="time" name="start"></label>
-        <label>Fin <input type="time" name="end"></label>
+      <h2 id="dlgTitle">✏️ Modificar clase</h2>
+      <label>Asignatura o Título <input name="title" required autocomplete="off"></label>
+      <label>Categoría <select name="cal"></select></label>
+      
+      <label>Fecha <input type="date" name="date" id="eventDateInput" required></label>
+      <div class="dlg-quick-row">
+        <button type="button" class="dlg-quick-btn" id="dlgDayPrev">◀ Ayer (-1d)</button>
+        <button type="button" class="dlg-quick-btn" id="dlgDayToday">Hoy</button>
+        <button type="button" class="dlg-quick-btn" id="dlgDayNext">Mañana (+1d) ▶</button>
       </div>
-      <label>Notas <textarea name="notes" rows="2"></textarea></label>
+
+      <div class="row">
+        <label>Hora Inicio <input type="time" name="start" id="eventStartTime"></label>
+        <label>Hora Fin <input type="time" name="end" id="eventEndTime"></label>
+      </div>
+      <div class="dlg-quick-slots">
+        <span>Horarios habituales UCLM:</span>
+        <button type="button" class="slot-pill" data-s="09:00" data-e="10:30">09:00–10:30</button>
+        <button type="button" class="slot-pill" data-s="10:45" data-e="12:15">10:45–12:15</button>
+        <button type="button" class="slot-pill" data-s="12:30" data-e="14:00">12:30–14:00</button>
+        <button type="button" class="slot-pill" data-s="16:00" data-e="18:30">16:00–18:30 (Tarde)</button>
+      </div>
+
+      <label>Notas o Aula <textarea name="notes" rows="2"></textarea></label>
+      
       <div class="actions">
-        <button type="button" id="del" class="ghost">Eliminar</button>
+        <button type="button" id="del" class="btn-danger-prominent">🗑️ Borrar clase</button>
         <span class="grow"></span>
         <button type="button" id="cancel" class="ghost">Cancelar</button>
-        <button type="submit" class="primary">Guardar</button>
+        <button type="submit" class="primary">Guardar cambios</button>
       </div>
     </form>
   </dialog>
