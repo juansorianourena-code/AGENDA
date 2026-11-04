@@ -78,8 +78,8 @@ h1 { margin: 2px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em
 dialog { border: 1px solid var(--sand); border-radius: 16px; padding: 20px; width: min(420px, 92vw); background: var(--white); }
 dialog::backdrop { background: rgba(17, 17, 17, .35); }
 dialog h2 { margin: 0 0 12px; font-size: 20px; }
-dialog label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-dialog input, dialog select, dialog textarea { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--sand); border-radius: 8px; background: var(--white); font-size: 16px; }
+dialog label:not(.sub-pill) { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+dialog input:not([type="checkbox"]), dialog select, dialog textarea { display: block; width: 100%; margin-top: 4px; padding: 8px 10px; border: 1px solid var(--sand); border-radius: 8px; background: var(--white); font-size: 16px; }
 .row { display: flex; gap: 10px; }
 .row label { flex: 1; }
 .actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
@@ -136,9 +136,36 @@ ol.hint li { margin-bottom: 4px; }
 /* Asistente paso a paso de importación UCLM */
 .import-step { display: flex; flex-direction: column; gap: 14px; }
 .sub-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-.sub-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--sand); background: var(--white); font-size: 13px; cursor: pointer; user-select: none; }
-.sub-pill input { margin: 0; cursor: pointer; }
-.sub-pill.checked { background: #e8ede0; border-color: var(--olive); color: var(--ink); font-weight: 500; }
+.sub-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  border: 1px solid var(--sand) !important;
+  background: var(--white) !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  margin: 0 !important;
+  width: auto !important;
+}
+.sub-pill input[type="checkbox"] {
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+.sub-pill span {
+  display: inline !important;
+  line-height: 1.3 !important;
+  color: var(--ink) !important;
+}
+.sub-pill.checked { background: #e8ede0 !important; border-color: var(--olive) !important; color: var(--ink) !important; font-weight: 500 !important; }
 .btn-toggle-group { display: flex; gap: 8px; margin: 6px 0; }
 .btn-toggle-group button { border: 1px solid var(--sand); background: var(--white); border-radius: 8px; padding: 6px 12px; font-size: 12px; }
 .btn-toggle-group button.active { background: var(--navy); color: var(--white); border-color: var(--navy); }

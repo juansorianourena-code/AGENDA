@@ -432,11 +432,9 @@ function cleanSubjectName(rawBlock) {
   for (const s of OFFICIAL_SUBJECTS) {
     if (norm.includes(s)) return s;
   }
-  // Si no coincide exactamente con la lista, limpiar patrones conocidos
-  let clean = rawBlock.split('\n')[0] || rawBlock;
-  clean = clean.replace(/\b(TEORÍA|PRÁCTICAS|PRUEBA|EVALUACIÓN|AULA|ED\.|MANUEL|ALONSO|PEÑA|G\d|S\d|SALA ORD).*$/i, '').trim();
-  clean = clean.replace(/[:,-]/g, '').trim();
-  return clean || 'Asignatura';
+  // Si no coincide con la lista oficial, ignorar fragmentos de pie de página o texto residual
+  if (/VISITA|TARANC[OÓ]N|AULA|EDIFICIO|BORRADOR|CURSO/i.test(rawBlock)) return '';
+  return '';
 }
 
 // Diccionario de asignaturas oficiales por curso en la Escuela de Agrónomos UCLM
@@ -646,6 +644,7 @@ async function parseUclmPdf(file) {
 
           // Nombre de asignatura limpio y sin profesores
           const subjectName = cleanSubjectName(fullBlock);
+          if (!subjectName) return; // Descartar si no es una asignatura válida
 
           const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
           const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo|visita/i.test(fullBlock);
@@ -725,11 +724,11 @@ async function handlePdfFile(file) {
     detectedSubjects = new Set(subjects);
     activeSelectedSubjects = new Set(subjects); // Todas seleccionadas por defecto
 
-    // Rellenar checkboxes de asignaturas
+    // Rellenar checkboxes de asignaturas limpias
     subjectFilterList.innerHTML = subjects.map(s => `
       <label class="sub-pill checked" data-subj="${esc(s)}">
         <input type="checkbox" checked value="${esc(s)}">
-        ${esc(s)}
+        <span>${esc(s)}</span>
       </label>
     `).join('');
 
@@ -891,7 +890,7 @@ function renderFeedCheckboxes() {
       <label class="sub-pill ${isChecked ? 'checked' : ''}" style="--c:${c.color}">
         <input type="checkbox" value="${c.id}" ${isChecked ? 'checked' : ''}>
         <i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c.color};margin-right:4px;"></i>
-        ${c.name}
+        <span>${c.name}</span>
       </label>
     `;
   }).join('');
