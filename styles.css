@@ -201,3 +201,23 @@ ol.hint li { margin-bottom: 4px; }
 .btn-toggle-group button.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
 .config-box { background: #faf7f0; border: 1px solid var(--sand); border-radius: 10px; padding: 12px; font-size: 13px; }
 .config-box h4 { margin: 0 0 8px; font-size: 13px; color: var(--navy); }
+
+/* Estilos Modo Enfoque Anti-estrés (Hoy) */
+.focus-wrap { display: flex; flex-direction: column; gap: 20px; padding: 20px 16px; }
+.focus-hero { background: var(--white); border: 1px solid var(--sand); border-radius: 16px; padding: 20px; text-align: left; }
+.focus-hero h2 { margin: 0 0 6px; font-size: 22px; color: var(--navy); }
+.focus-hero p { margin: 0; color: var(--muted); font-size: 14px; }
+.focus-card { background: var(--white); border: 1px solid var(--sand); border-radius: 14px; padding: 18px; }
+.focus-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.focus-card-header h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.focus-item-list { display: flex; flex-direction: column; gap: 10px; }
+.focus-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 10px; background: #faf8f5; border-left: 4px solid var(--c); font-size: 14px; }
+.focus-item.done { opacity: 0.5; text-decoration: line-through; }
+.focus-btn-reprogram { background: none; border: 1px solid var(--sand); border-radius: 8px; padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--navy); }
+.focus-btn-reprogram:hover { background: #ede7d8; }
+
+/* Lista Vaciado Mental (Brain Dump) */
+.dump-list { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.dump-entry { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; background: #faf7f0; border-left: 3px solid var(--c); font-size: 13px; }
+.dump-entry-text { flex: 1; margin: 0 8px; }
+.dump-entry-btn { background: none; border: 1px solid var(--sand); border-radius: 6px; padding: 3px 8px; font-size: 11px; cursor: pointer; color: var(--navy); }

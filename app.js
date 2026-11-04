@@ -184,7 +184,8 @@ function render() {
   renderHeader();
   renderLegend();
   const v = $('view');
-  if (state.view === 'agenda') v.innerHTML = agendaView();
+  if (state.view === 'focus') v.innerHTML = focusView();
+  else if (state.view === 'agenda') v.innerHTML = agendaView();
   else if (state.view === 'day') v.innerHTML = timeGrid([state.date]);
   else if (state.view === 'week') {
     const m = mondayOf(state.date);
@@ -201,7 +202,10 @@ function render() {
 function renderHeader() {
   const d = state.date;
   let title, sub = '';
-  if (state.view === 'agenda') {
+  if (state.view === 'focus') {
+    title = `Hoy en calma`;
+    sub = fmt(new Date(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  } else if (state.view === 'agenda') {
     const m = mondayOf(d), e = addDays(m, 6);
     title = `Agenda semanal`;
     sub = `${m.getDate()} ${fmt(m, { month: 'short' })} – ${e.getDate()} ${fmt(e, { month: 'short', year: 'numeric' })}`;
@@ -346,7 +350,80 @@ function timeGrid(days) {
   </div>`;
 }
 
-/* ---------- Vista Agenda / Lista (Especial Móviles) ---------- */
+/* ---------- Vista Modo Enfoque Anti-Estrés ("Hoy en calma") ---------- */
+function focusView() {
+  const todayStr = todayISO();
+  const dayEvs = eventsOn(todayStr);
+
+  const classes = dayEvs.filter(e => e.cal === 'uni' || e.cal === 'prac');
+  const tasksAndExams = dayEvs.filter(e => e.cal !== 'uni' && e.cal !== 'prac');
+
+  let html = `
+    <div class="focus-wrap">
+      <div class="focus-hero">
+        <h2>Hoy solo importa esto</h2>
+        <p>No pienses en toda la semana ni en el cuatrimestre entero. Concéntrate en cumplir lo de hoy paso a paso y tu mente descansará.</p>
+      </div>
+  `;
+
+  // 1. Clases de hoy (si las hay)
+  html += `
+    <div class="focus-card">
+      <div class="focus-card-header">
+        <h3>🏛️ Clases y Universidad hoy (${classes.length})</h3>
+        <span class="muted-text">${fmt(new Date(), { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+      </div>
+      <div class="focus-item-list">
+  `;
+  if (!classes.length) {
+    html += `<div style="padding:12px;color:var(--muted);font-size:13px;">Hoy no tienes clases programadas. ¡Aprovecha para descansar o adelantar!</div>`;
+  } else {
+    classes.forEach(e => {
+      html += `
+        <div class="focus-item" style="--c:${calById[e.cal].color}">
+          <div>
+            <b>${e.start || 'Hora sin definir'} ${e.end ? '– ' + e.end : ''}</b>
+            <div style="font-weight:600;margin-top:2px;">${esc(e.title)}</div>
+          </div>
+          <span class="agenda-cal-badge" style="--c:${calById[e.cal].color}">${calById[e.cal].name}</span>
+        </div>
+      `;
+    });
+  }
+  html += `</div></div>`;
+
+  // 2. Objetivos de estudio y tareas de la tarde (máximo 3 prioridades)
+  html += `
+    <div class="focus-card">
+      <div class="focus-card-header">
+        <h3>🎯 Mis 3 prioridades para la tarde</h3>
+        <button type="button" class="focus-btn-reprogram" id="focusReprogramBtn" title="Mover lo no hecho a mañana">🔄 Reajustar a mañana</button>
+      </div>
+      <div class="focus-item-list">
+  `;
+  if (!tasksAndExams.length) {
+    html += `
+      <div style="padding:12px;color:var(--muted);font-size:13px;">
+        No tienes tareas pendientes para hoy. Puedes pulsar <b>+</b> para añadir una tarea de estudio o soltar una idea con <b>🧠 Apuntar idea</b>.
+      </div>
+    `;
+  } else {
+    tasksAndExams.forEach(e => {
+      html += `
+        <div class="focus-item" style="--c:${calById[e.cal].color}">
+          <div>
+            <div style="font-weight:600;">${esc(e.title)}</div>
+            <small style="color:var(--muted);">${e.start ? e.start + ' • ' : ''}${calById[e.cal].name}</small>
+          </div>
+          <button type="button" class="focus-btn-reprogram" data-delay-id="${e.id}" title="Pasar para mañana">Pasar a mañana</button>
+        </div>
+      `;
+    });
+  }
+  html += `</div></div></div>`;
+
+  return html;
+}
 function agendaView() {
   const m = mondayOf(state.date);
   const days = [...Array(7)].map((_, i) => addDays(m, i));
@@ -1107,5 +1184,240 @@ $('view').onclick = e => {
 };
 
 load();
+loadBrainDumps();
 render();
 setInterval(() => { if (state.view === 'day' || state.view === 'week') render(); }, 5 * 60 * 1000);
+
+/* ---------- Vaciado Mental (Brain Dump) & Planificador de Estudio ---------- */
+const brainDumpBtn = $('brainDumpBtn');
+const brainDumpDlg = $('brainDumpDlg');
+const brainDumpForm = $('brainDumpForm');
+const dumpClose = $('dumpClose');
+const dumpList = $('dumpList');
+const dumpCount = $('dumpCount');
+
+const studyPlanBtn = $('studyPlanBtn');
+const studyPlanDlg = $('studyPlanDlg');
+const studyPlanForm = $('studyPlanForm');
+const planClose = $('planClose');
+const planExamSelect = $('planExamSelect');
+
+let brainDumpItems = [];
+const dumpStorageKey = () => `agenda.dump.${uid || 'anon'}`;
+
+function loadBrainDumps() {
+  try {
+    brainDumpItems = JSON.parse(localStorage.getItem(dumpStorageKey()) || '[]');
+  } catch (e) { brainDumpItems = []; }
+  renderDumpList();
+}
+
+function saveBrainDumps() {
+  localStorage.setItem(dumpStorageKey(), JSON.stringify(brainDumpItems));
+  renderDumpList();
+}
+
+function renderDumpList() {
+  if (!dumpCount || !dumpList) return;
+  dumpCount.textContent = brainDumpItems.length;
+  if (!brainDumpItems.length) {
+    dumpList.innerHTML = `<div style="padding:12px;text-align:center;color:var(--muted);font-size:12px;">Tu mente está despejada ✨</div>`;
+    return;
+  }
+  dumpList.innerHTML = brainDumpItems.map(item => {
+    const cal = calById[item.cal] || calById['pers'];
+    return `
+      <div class="dump-entry" style="--c:${cal.color}">
+        <span class="agenda-cal-badge" style="--c:${cal.color}">${cal.name}</span>
+        <span class="dump-entry-text">${esc(item.text)} (${item.mins} min)</span>
+        <div style="display:flex;gap:4px;">
+          <button type="button" class="dump-entry-btn" data-schedule-id="${item.id}" title="Agendar para hoy">Hoy</button>
+          <button type="button" class="dump-entry-btn" data-del-dump="${item.id}" title="Descartar">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+if (brainDumpBtn) {
+  brainDumpBtn.onclick = () => {
+    loadBrainDumps();
+    brainDumpDlg.showModal();
+  };
+}
+if (dumpClose) dumpClose.onclick = () => brainDumpDlg.close();
+
+if (brainDumpForm) {
+  brainDumpForm.onsubmit = (e) => {
+    e.preventDefault();
+    const text = $('dumpText').value.trim();
+    const cal = $('dumpCal').value;
+    const minsVal = parseInt($('dumpMins').value, 10);
+    if (!text) return;
+
+    brainDumpItems.unshift({
+      id: crypto.randomUUID(),
+      text,
+      cal,
+      mins: minsVal,
+      date: new Date().toISOString()
+    });
+    $('dumpText').value = '';
+    saveBrainDumps();
+  };
+}
+
+if (dumpList) {
+  dumpList.onclick = (e) => {
+    const delBtn = e.target.closest('[data-del-dump]');
+    if (delBtn) {
+      brainDumpItems = brainDumpItems.filter(x => x.id !== delBtn.dataset.delDump);
+      saveBrainDumps();
+      return;
+    }
+    const schedBtn = e.target.closest('[data-schedule-id]');
+    if (schedBtn) {
+      const item = brainDumpItems.find(x => x.id === schedBtn.dataset.scheduleId);
+      if (!item) return;
+
+      const newEv = {
+        id: crypto.randomUUID(),
+        title: item.text,
+        cal: item.cal,
+        date: todayISO(),
+        start: '17:00',
+        end: '18:00',
+        notes: 'Generado desde Vaciado Mental'
+      };
+      state.events.push(newEv);
+      pushOp({ op: 'upsert', row: toRow(newEv) });
+      render();
+
+      brainDumpItems = brainDumpItems.filter(x => x.id !== item.id);
+      saveBrainDumps();
+      alert(`"${item.text}" se ha colocado en tu agenda de hoy a las 17:00.`);
+    }
+  };
+}
+
+/* ---------- Planificador Inteligente de Exámenes (Hacia Atrás) ---------- */
+if (studyPlanBtn) {
+  studyPlanBtn.onclick = () => {
+    const exams = state.events.filter(e => e.cal === 'exam' || /examen|prueba/i.test(e.title));
+    if (!exams.length) {
+      alert('Primero añade o sube algún examen en la agenda (o importa tu calendario de exámenes).');
+      return;
+    }
+    planExamSelect.innerHTML = exams.map(e => `
+      <option value="${e.id}">${e.title} (${e.date})</option>
+    `).join('');
+    studyPlanDlg.showModal();
+  };
+}
+if (planClose) planClose.onclick = () => studyPlanDlg.close();
+
+if (studyPlanForm) {
+  studyPlanForm.onsubmit = (e) => {
+    e.preventDefault();
+    const examId = planExamSelect.value;
+    const exam = state.events.find(x => x.id === examId);
+    if (!exam) return;
+
+    const numTopics = parseInt($('planTopics').value, 10);
+    const diff = $('planDifficulty').value;
+    const hours = parseFloat($('planDailyHours').value);
+    const startTime = $('planStartTime').value;
+
+    const [sh, sm] = startTime.split(':').map(Number);
+    const endMinutes = sh * 60 + sm + Math.round(hours * 60);
+    const endTime = `${pad(Math.floor(endMinutes / 60))}:${pad(endMinutes % 60)}`;
+
+    const examDate = parse(exam.date);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diffDays = Math.floor((examDate - today) / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) {
+      alert('La fecha de este examen ya ha pasado o es hoy.');
+      return;
+    }
+
+    let sessionsPerTopic = 1;
+    let reviewDays = 2;
+    if (diff === 'dificil') { sessionsPerTopic = 2; reviewDays = 3; }
+    else if (diff === 'facil') { reviewDays = 1; }
+
+    const availableDays = Math.max(1, diffDays - 1);
+    const generatedEvents = [];
+    let currentTopic = 1;
+    let sessionCount = 0;
+
+    for (let d = 1; d <= availableDays; d++) {
+      const targetDate = addDays(today, d);
+      if (sameDay(targetDate, examDate)) continue;
+
+      let title = '';
+      if (currentTopic <= numTopics) {
+        title = `Estudio: ${exam.title.replace(/^Examen:\s*/i, '')} (Tema ${currentTopic})`;
+        sessionCount++;
+        if (sessionCount >= sessionsPerTopic) {
+          currentTopic++;
+          sessionCount = 0;
+        }
+      } else {
+        title = `Repaso General: ${exam.title.replace(/^Examen:\s*/i, '')}`;
+      }
+
+      const ev = {
+        id: crypto.randomUUID(),
+        title,
+        cal: 'exam',
+        date: iso(targetDate),
+        start: startTime,
+        end: endTime,
+        notes: `Sesión de estudio planificada automáticamente para ${exam.title}`
+      };
+      generatedEvents.push(ev);
+      state.events.push(ev);
+      pushOp({ op: 'upsert', row: toRow(ev) });
+    }
+
+    render();
+    studyPlanDlg.close();
+    alert(`¡Plan creado! Se han repartido ${generatedEvents.length} sesiones de estudio hasta el día del examen.`);
+  };
+}
+
+/* ---------- Reprogramación Sin Culpa (Modo Enfoque) ---------- */
+$('view').addEventListener('click', (e) => {
+  const delayBtn = e.target.closest('[data-delay-id]');
+  if (delayBtn) {
+    const ev = state.events.find(x => x.id === delayBtn.dataset.delayId);
+    if (ev) {
+      const tomorrow = addDays(new Date(), 1);
+      ev.date = iso(tomorrow);
+      pushOp({ op: 'upsert', row: toRow(ev) });
+      render();
+      alert(`"${ev.title}" movido a mañana sin agobios.`);
+    }
+    return;
+  }
+
+  const reprogramBtn = e.target.closest('#focusReprogramBtn');
+  if (reprogramBtn) {
+    const todayStr = todayISO();
+    const pending = state.events.filter(x => x.date === todayStr && x.cal !== 'uni' && x.cal !== 'prac');
+    if (!pending.length) {
+      alert('No tienes tareas pendientes para reprogramar hoy.');
+      return;
+    }
+    const tomorrow = addDays(new Date(), 1);
+    pending.forEach(ev => {
+      ev.date = iso(tomorrow);
+      pushOp({ op: 'upsert', row: toRow(ev) });
+    });
+    render();
+    alert(`Listo: ${pending.length} tareas se han aplazado a mañana.`);
+    return;
+  }
+});

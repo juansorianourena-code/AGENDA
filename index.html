@@ -18,6 +18,8 @@
         <h1 id="title"></h1>
       </div>
       <div class="top-actions">
+        <button class="ghost icon-btn" id="brainDumpBtn" title="Vaciado rápido de mente">🧠 Apuntar idea</button>
+        <button class="ghost icon-btn" id="studyPlanBtn" title="Organizar estudio de exámenes">📚 Plan de estudio</button>
         <button class="ghost icon-btn" id="importBtn" title="Subir horario universidad (PDF)">📄 Subir horario</button>
         <button class="add" id="addBtn" aria-label="Añadir evento">+</button>
       </div>
@@ -25,6 +27,7 @@
 
     <nav class="bar">
       <div class="tabs" id="tabs">
+        <button data-view="focus">🎯 Hoy (Enfoque)</button>
         <button data-view="agenda">Agenda</button>
         <button data-view="day">Día</button>
         <button data-view="week">Semana</button>
@@ -62,6 +65,82 @@
       </div>
     </form>
   </div>
+
+  <!-- Diálogo Vaciado Mental (Brain Dump) -->
+  <dialog id="brainDumpDlg">
+    <h2>🧠 Vaciado Rápido de Mente</h2>
+    <p class="hint">Suelta aquí cualquier pensamiento, recado de JMV, catequesis o tema pendiente para no tenerlo rondando en la cabeza.</p>
+    <form id="brainDumpForm">
+      <label>¿Qué tienes en la cabeza?
+        <input type="text" id="dumpText" placeholder="Ej: Preparar catequesis del viernes, comprar libro, avisar a JMV..." required autocomplete="off">
+      </label>
+      <div class="row">
+        <label>Categoría
+          <select id="dumpCal">
+            <option value="pers">Personal</option>
+            <option value="jmv">JMV</option>
+            <option value="cat">Catequesis</option>
+            <option value="uni">Universidad</option>
+            <option value="exam">Exámenes / Estudio</option>
+          </select>
+        </label>
+        <label>Tiempo estimado
+          <select id="dumpMins">
+            <option value="15">15 min</option>
+            <option value="30" selected>30 min</option>
+            <option value="45">45 min</option>
+            <option value="60">1 hora</option>
+            <option value="120">2 horas</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button type="button" class="ghost" id="dumpClose">Cerrar</button>
+        <span class="grow"></span>
+        <button type="submit" class="primary">Soltar pensamiento</button>
+      </div>
+    </form>
+    <div style="margin-top:16px;">
+      <h4 style="margin:0 0 8px;font-size:13px;color:var(--navy);">Cosas pendientes en tu mente (<span id="dumpCount">0</span>)</h4>
+      <div id="dumpList" class="dump-list"></div>
+    </div>
+  </dialog>
+
+  <!-- Diálogo Planificador de Estudio de Exámenes -->
+  <dialog id="studyPlanDlg" class="wide-dialog">
+    <h2>📚 Asistente de Plan de Estudio</h2>
+    <p class="hint">Dime qué examen tienes y te preparo un reparto equilibrado de estudio y repasos por las tardes para llegar tranquilo.</p>
+    <form id="studyPlanForm">
+      <label>Examen a preparar
+        <select id="planExamSelect" required></select>
+      </label>
+      <div class="row">
+        <label>Número de temas
+          <input type="number" id="planTopics" min="1" max="50" value="8" required>
+        </label>
+        <label>Dificultad
+          <select id="planDifficulty">
+            <option value="facil">Fácil (repaso ligero)</option>
+            <option value="medio" selected>Normal</option>
+            <option value="dificil">Difícil (necesito más días)</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Horas de estudio al día
+          <input type="number" id="planDailyHours" min="1" max="8" step="0.5" value="2" required>
+        </label>
+        <label>Hora de inicio preferida
+          <input type="time" id="planStartTime" value="16:30" required>
+        </label>
+      </div>
+      <div class="actions" style="margin-top:16px;">
+        <button type="button" class="ghost" id="planClose">Cancelar</button>
+        <span class="grow"></span>
+        <button type="submit" class="primary">Generar plan de estudio</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- Diálogo Importar Horario PDF UCLM Adaptable -->
   <dialog id="importDlg" class="wide-dialog">
