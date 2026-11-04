@@ -305,12 +305,27 @@ function timeGrid(days) {
       </button>`;
     }).join('');
 
+    // Líneas guía de descanso (10:30 y 12:15) y fin de clases de mañana (14:00) de lunes a viernes
+    let guidesHtml = '';
+    const dayNum = d.getDay();
+    if (dayNum >= 1 && dayNum <= 5) {
+      const topDesc1 = ((10 * 60 + 30) - H0 * 60) / 60 * HOUR;
+      const topDesc2 = ((12 * 60 + 15) - H0 * 60) / 60 * HOUR;
+      const topFin = ((14 * 60) - H0 * 60) / 60 * HOUR;
+
+      guidesHtml = `
+        <div class="guide-line break" style="top:${topDesc1}px" title="Descanso 10:30"><span>Descanso</span></div>
+        <div class="guide-line break" style="top:${topDesc2}px" title="Descanso 12:15"><span>Descanso</span></div>
+        <div class="guide-line class-end" style="top:${topFin}px" title="Fin de clases 14:00"><span>Fin clases</span></div>
+      `;
+    }
+
     let now = '';
     if (ds === todayISO()) {
       const t = new Date(); const m = t.getHours() * 60 + t.getMinutes();
       if (m >= H0 * 60 && m <= H1 * 60) now = `<div class="now" style="top:${(m - H0 * 60) / 60 * HOUR}px"></div>`;
     }
-    return `<div class="tg-col ${ds === todayISO() ? 'today' : ''}" data-date="${ds}">${evsHtml}${now}</div>`;
+    return `<div class="tg-col ${ds === todayISO() ? 'today' : ''}" data-date="${ds}">${guidesHtml}${evsHtml}${now}</div>`;
   }).join('');
 
   return `<div style="--cols:${cols};--n:${n}">

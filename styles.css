@@ -53,7 +53,15 @@ h1 { margin: 2px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em
 .ev { position: absolute; left: 2px; right: 2px; overflow: hidden; border-radius: 6px; padding: 2px 6px; font-size: 12px; color: var(--white); background: var(--c); border: 0; text-align: left; }
 .ev small { display: block; opacity: .8; }
 .ev.chipev { position: static; display: block; width: 100%; margin-bottom: 2px; }
-.now { position: absolute; left: 0; right: 0; height: 2px; background: var(--olive); pointer-events: none; }
+.now { position: absolute; left: 0; right: 0; height: 2px; background: var(--olive); pointer-events: none; z-index: 2; }
+
+/* Líneas de descanso y fin de clase */
+.guide-line { position: absolute; left: 0; right: 0; pointer-events: none; z-index: 1; border-top: 1px dashed; }
+.guide-line.break { border-color: rgba(107, 112, 64, 0.45); } /* Verde oliva suave para descanso */
+.guide-line.class-end { border-color: rgba(31, 42, 68, 0.45); } /* Azul marino suave para fin de clase */
+.guide-line span { position: absolute; right: 4px; bottom: 2px; font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
+.guide-line.break span { color: var(--olive); }
+.guide-line.class-end span { color: var(--navy); }
 
 /* Mes */
 .m-head, .m-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
