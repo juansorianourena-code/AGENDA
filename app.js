@@ -285,7 +285,58 @@ function yearView() {
   return `<div class="y-grid">${months}</div>`;
 }
 
-/* ---------- Navegación ---------- */
+/* ---------- Apple Calendar Feed Dialog ---------- */
+const feedDlg = $('feedDlg');
+const feedUrlInput = $('feedUrl');
+const feedSubLink = $('feedSub');
+
+async function getOrCreateFeedToken(forceNew = false) {
+  if (!uid) return null;
+  if (!forceNew) {
+    const { data } = await sb.from('feed_tokens').select('token').single();
+    if (data && data.token) return data.token;
+  }
+  // Generar nuevo token
+  const newToken = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+  const { error } = await sb.from('feed_tokens').upsert({ user_id: uid, token: newToken });
+  if (error) {
+    alert('Error al generar enlace de Apple Calendar: ' + error.message);
+    return null;
+  }
+  return newToken;
+}
+
+async function openFeedDialog() {
+  feedUrlInput.value = 'Cargando enlace...';
+  feedDlg.showModal();
+  const token = await getOrCreateFeedToken(false);
+  if (!token) return;
+  const httpUrl = `${window.location.origin}/calendar/${token}.ics`;
+  const webcalUrl = httpUrl.replace(/^https?:\/\//i, 'webcal://');
+  feedUrlInput.value = httpUrl;
+  feedSubLink.href = webcalUrl;
+}
+
+$('feedBtn').onclick = () => openFeedDialog();
+$('feedClose').onclick = () => feedDlg.close();
+$('feedCopy').onclick = async () => {
+  if (!feedUrlInput.value || feedUrlInput.value.startsWith('Cargando')) return;
+  await navigator.clipboard.writeText(feedUrlInput.value);
+  const old = $('feedCopy').textContent;
+  $('feedCopy').textContent = '¡Copiado!';
+  setTimeout(() => $('feedCopy').textContent = old, 2000);
+};
+$('feedReset').onclick = async () => {
+  if (!confirm('Si generas un enlace nuevo, el calendario que ya tenías sincronizado en Apple dejará de recibir cambios hasta que pongas el nuevo. ¿Continuar?')) return;
+  feedUrlInput.value = 'Generando nuevo enlace...';
+  const token = await getOrCreateFeedToken(true);
+  if (!token) return;
+  const httpUrl = `${window.location.origin}/calendar/${token}.ics`;
+  const webcalUrl = httpUrl.replace(/^https?:\/\//i, 'webcal://');
+  feedUrlInput.value = httpUrl;
+  feedSubLink.href = webcalUrl;
+};
 function shift(dir) {
   const d = new Date(state.date);
   if (state.view === 'day') d.setDate(d.getDate() + dir);

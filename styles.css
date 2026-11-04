@@ -105,3 +105,11 @@ dialog input, dialog select, dialog textarea { display: block; width: 100%; marg
 .authbox label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
 .authbox input { display: block; width: 100%; margin-top: 4px; padding: 10px; border: 1px solid var(--sand); border-radius: 8px; font-size: 16px; background: var(--white); }
 .msg { min-height: 18px; margin: 0 0 8px; font-size: 13px; color: var(--navy); }
+
+/* Estilos para feed Apple Calendar */
+.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.hint { font-size: 13px; color: var(--muted); margin: 6px 0 12px; }
+.hint.small { font-size: 11px; margin-top: 14px; line-height: 1.4; }
+ol.hint { padding-left: 20px; margin: 8px 0 14px; }
+ol.hint li { margin-bottom: 4px; }
+#feedUrl { font-size: 12px; color: var(--navy); background: var(--beige); border: 1px solid var(--sand); padding: 8px 10px; border-radius: 8px; width: 100%; margin-bottom: 12px; }
