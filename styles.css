@@ -39,12 +39,13 @@ h1 { margin: 2px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em
 .note { color: var(--muted); font-size: 12px; margin-top: 16px; }
 
 /* Cuadrícula horaria (día y semana) */
-.tg-head, .tg-body { display: grid; grid-template-columns: 44px repeat(var(--cols), 1fr); }
+.tg-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tg-head, .tg-body { display: grid; grid-template-columns: 44px repeat(var(--cols), minmax(var(--min-col, 1fr), 1fr)); }
 .tg-head { border-bottom: 1px solid var(--sand); }
 .tg-head div { padding: 8px 4px; text-align: center; font-size: 13px; color: var(--muted); }
 .tg-head div.today { color: var(--navy); font-weight: 600; }
 .tg-head div b { display: block; font-size: 18px; color: var(--ink); font-weight: 600; }
-.tg-allday { display: grid; grid-template-columns: 44px repeat(var(--cols), 1fr); border-bottom: 1px solid var(--sand); }
+.tg-allday { display: grid; grid-template-columns: 44px repeat(var(--cols), minmax(var(--min-col, 1fr), 1fr)); border-bottom: 1px solid var(--sand); }
 .tg-allday div { padding: 4px; min-height: 8px; }
 .tg-body { position: relative; max-height: 70vh; overflow-y: auto; }
 .tg-hours div { height: var(--hour); font-size: 11px; color: var(--muted); text-align: right; padding-right: 6px; transform: translateY(-7px); }
@@ -55,13 +56,27 @@ h1 { margin: 2px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em
 .ev.chipev { position: static; display: block; width: 100%; margin-bottom: 2px; }
 .now { position: absolute; left: 0; right: 0; height: 2px; background: var(--olive); pointer-events: none; z-index: 2; }
 
-/* Líneas de descanso y fin de clase */
+/* Líneas de descanso y fin de clase sutiles sin texto solapado */
 .guide-line { position: absolute; left: 0; right: 0; pointer-events: none; z-index: 1; border-top: 1px dashed; }
-.guide-line.break { border-color: rgba(107, 112, 64, 0.45); } /* Verde oliva suave para descanso */
-.guide-line.class-end { border-color: rgba(31, 42, 68, 0.45); } /* Azul marino suave para fin de clase */
-.guide-line span { position: absolute; right: 4px; bottom: 2px; font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
-.guide-line.break span { color: var(--olive); }
-.guide-line.class-end span { color: var(--navy); }
+.guide-line.break { border-color: rgba(107, 112, 64, 0.35); }
+.guide-line.class-end { border-color: rgba(31, 42, 68, 0.4); border-top-style: solid; }
+
+/* Vista Lista / Agenda (Ultra clara y legible para móviles) */
+.agenda-list { display: flex; flex-direction: column; gap: 16px; padding: 16px; }
+.agenda-day-group { border: 1px solid var(--sand); border-radius: 12px; background: var(--white); overflow: hidden; }
+.agenda-day-header { padding: 10px 14px; background: #fbf9f4; border-bottom: 1px solid var(--sand); display: flex; justify-content: space-between; align-items: baseline; }
+.agenda-day-header h3 { margin: 0; font-size: 15px; font-weight: 600; text-transform: capitalize; color: var(--ink); }
+.agenda-day-header.today h3 { color: var(--navy); }
+.agenda-day-header .day-tag { font-size: 11px; color: var(--muted); }
+.agenda-day-items { display: flex; flex-direction: column; }
+.agenda-item { display: flex; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--beige); background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; cursor: pointer; align-items: flex-start; }
+.agenda-item:last-child { border-bottom: 0; }
+.agenda-time { min-width: 85px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.agenda-detail { flex: 1; }
+.agenda-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.agenda-cal-badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; color: var(--white); background: var(--c); font-weight: 500; }
+.agenda-break-notice { padding: 6px 14px; font-size: 11px; color: var(--olive); background: #f5f7f0; display: flex; align-items: center; gap: 6px; border-bottom: 1px dashed var(--sand); }
+.agenda-empty { padding: 24px; text-align: center; color: var(--muted); font-size: 14px; }
 
 /* Mes */
 .m-head, .m-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
@@ -100,6 +115,13 @@ dialog input:not([type="checkbox"]), dialog select, dialog textarea { display: b
   .m-cell { min-height: 64px; }
   .m-ev { font-size: 0; height: 6px; padding: 0; }
   .app { padding: 16px 10px 40px; }
+  .tabs button { padding: 6px 10px; font-size: 13px; }
+  /* En la semana para móviles, permitir scroll lateral para que cada columna tenga 95px legibles */
+  .tg-head.week-grid, .tg-body.week-grid {
+    --min-col: 95px;
+  }
+  .tg-head.week-grid { min-width: calc(44px + 95px * 7); }
+  .tg-body.week-grid { min-width: calc(44px + 95px * 7); }
 }
 
 /* Pie, estado y acceso */

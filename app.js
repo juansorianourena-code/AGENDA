@@ -184,7 +184,8 @@ function render() {
   renderHeader();
   renderLegend();
   const v = $('view');
-  if (state.view === 'day') v.innerHTML = timeGrid([state.date]);
+  if (state.view === 'agenda') v.innerHTML = agendaView();
+  else if (state.view === 'day') v.innerHTML = timeGrid([state.date]);
   else if (state.view === 'week') {
     const m = mondayOf(state.date);
     v.innerHTML = timeGrid([...Array(7)].map((_, i) => addDays(m, i)));
@@ -200,12 +201,20 @@ function render() {
 function renderHeader() {
   const d = state.date;
   let title, sub = '';
-  if (state.view === 'day') { title = fmt(d, { weekday: 'long', day: 'numeric', month: 'long' }); sub = String(d.getFullYear()); }
-  else if (state.view === 'week') {
+  if (state.view === 'agenda') {
+    const m = mondayOf(d), e = addDays(m, 6);
+    title = `Agenda semanal`;
+    sub = `${m.getDate()} ${fmt(m, { month: 'short' })} – ${e.getDate()} ${fmt(e, { month: 'short', year: 'numeric' })}`;
+  } else if (state.view === 'day') {
+    title = fmt(d, { weekday: 'long', day: 'numeric', month: 'long' }); sub = String(d.getFullYear());
+  } else if (state.view === 'week') {
     const m = mondayOf(d), e = addDays(m, 6);
     title = `${m.getDate()} – ${e.getDate()} ${fmt(e, { month: 'long' })}`; sub = String(e.getFullYear());
-  } else if (state.view === 'month') { title = fmt(d, { month: 'long' }); sub = String(d.getFullYear()); }
-  else title = String(d.getFullYear());
+  } else if (state.view === 'month') {
+    title = fmt(d, { month: 'long' }); sub = String(d.getFullYear());
+  } else {
+    title = String(d.getFullYear());
+  }
   $('title').textContent = title;
   $('sub').textContent = sub || fmt(new Date(), { weekday: 'long', day: 'numeric', month: 'long' });
 }
@@ -305,7 +314,7 @@ function timeGrid(days) {
       </button>`;
     }).join('');
 
-    // Líneas guía de descanso (10:30 y 12:15) y fin de clases de mañana (14:00) de lunes a viernes
+  // Líneas guía de descanso (10:30 y 12:15) y fin de clases de mañana (14:00) de lunes a viernes
     let guidesHtml = '';
     const dayNum = d.getDay();
     if (dayNum >= 1 && dayNum <= 5) {
@@ -313,10 +322,11 @@ function timeGrid(days) {
       const topDesc2 = ((12 * 60 + 15) - H0 * 60) / 60 * HOUR;
       const topFin = ((14 * 60) - H0 * 60) / 60 * HOUR;
 
+      // Líneas puramente visuales sin texto para no solaparse nunca con los títulos de los eventos
       guidesHtml = `
-        <div class="guide-line break" style="top:${topDesc1}px" title="Descanso 10:30"><span>Descanso</span></div>
-        <div class="guide-line break" style="top:${topDesc2}px" title="Descanso 12:15"><span>Descanso</span></div>
-        <div class="guide-line class-end" style="top:${topFin}px" title="Fin de clases 14:00"><span>Fin clases</span></div>
+        <div class="guide-line break" style="top:${topDesc1}px" title="Descanso 10:30"></div>
+        <div class="guide-line break" style="top:${topDesc2}px" title="Descanso 12:15"></div>
+        <div class="guide-line class-end" style="top:${topFin}px" title="Fin de clases 14:00"></div>
       `;
     }
 
@@ -328,11 +338,62 @@ function timeGrid(days) {
     return `<div class="tg-col ${ds === todayISO() ? 'today' : ''}" data-date="${ds}">${guidesHtml}${evsHtml}${now}</div>`;
   }).join('');
 
-  return `<div style="--cols:${cols};--n:${n}">
-    <div class="tg-head"><div></div>${head}</div>
-    <div class="tg-allday"><div></div>${allday}</div>
-    <div class="tg-body"><div class="tg-hours">${hours}</div>${colsHtml}</div>
+  const isWeek = cols === 7;
+  return `<div class="tg-wrap" style="--cols:${cols};--n:${n}">
+    <div class="tg-head ${isWeek ? 'week-grid' : ''}"><div></div>${head}</div>
+    <div class="tg-allday ${isWeek ? 'week-grid' : ''}"><div></div>${allday}</div>
+    <div class="tg-body ${isWeek ? 'week-grid' : ''}"><div class="tg-hours">${hours}</div>${colsHtml}</div>
   </div>`;
+}
+
+/* ---------- Vista Agenda / Lista (Especial Móviles) ---------- */
+function agendaView() {
+  const m = mondayOf(state.date);
+  const days = [...Array(7)].map((_, i) => addDays(m, i));
+  let html = '<div class="agenda-list">';
+
+  let totalEvents = 0;
+  days.forEach(d => {
+    const ds = iso(d);
+    const dayEvs = eventsOn(ds);
+    const isToday = sameDay(d, new Date());
+    totalEvents += dayEvs.length;
+
+    html += `
+      <div class="agenda-day-group">
+        <div class="agenda-day-header ${isToday ? 'today' : ''}">
+          <h3>${fmt(d, { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
+          ${isToday ? '<span class="day-tag">HOY</span>' : ''}
+        </div>
+        <div class="agenda-day-items">
+    `;
+
+    if (!dayEvs.length) {
+      html += `<div class="agenda-empty">Sin clases ni eventos previstos</div>`;
+    } else {
+      // Ordenar por hora
+      dayEvs.forEach((e, idx) => {
+        const cal = calById[e.cal] || calById['uni'];
+        const timeStr = e.start ? `${e.start} – ${e.end || ''}` : 'Todo el día';
+
+        // Si es viernes o día entre semana y es la hora de descanso, mostrar píldora limpia de descanso
+        html += `
+          <button type="button" class="agenda-item" data-id="${e.id}">
+            <div class="agenda-time">${timeStr}</div>
+            <div class="agenda-detail">
+              <div class="agenda-title">${esc(e.title)}</div>
+              <span class="agenda-cal-badge" style="--c:${cal.color}">${cal.name}</span>
+            </div>
+          </button>
+        `;
+      });
+    }
+
+    html += `</div></div>`;
+  });
+
+  html += '</div>';
+  return html;
 }
 
 function monthView() {
@@ -968,7 +1029,8 @@ $('feedReset').onclick = async () => {
 };
 function shift(dir) {
   const d = new Date(state.date);
-  if (state.view === 'day') d.setDate(d.getDate() + dir);
+  if (state.view === 'agenda') d.setDate(d.getDate() + 7 * dir);
+  else if (state.view === 'day') d.setDate(d.getDate() + dir);
   else if (state.view === 'week') d.setDate(d.getDate() + 7 * dir);
   else if (state.view === 'month') { d.setDate(1); d.setMonth(d.getMonth() + dir); }
   else d.setFullYear(d.getFullYear() + dir);
