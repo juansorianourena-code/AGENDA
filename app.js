@@ -38,7 +38,7 @@ const PREFS = 'agenda.prefs';
 const LEGACY = 'agenda.v1';
 
 const state = {
-  view: 'week',
+  view: 'agenda',
   date: new Date(),
   events: [],
   hidden: new Set(),
@@ -994,6 +994,76 @@ function getFilteredEvents() {
 
     return true;
   });
+}
+
+// Carga instantánea verificada de la base de datos oficial
+const btnApplyOfficial = $('btnApplyOfficial');
+if (btnApplyOfficial) {
+  btnApplyOfficial.onclick = () => {
+    const courseType = $('quickCourseSelect').value;
+    const group = $('quickGroupSelect').value; // G1, G2, G3, none
+    const data = window.UCLM_OFFICIAL_DATA;
+    if (!data) {
+      alert('Datos oficiales no disponibles.');
+      return;
+    }
+
+    let itemsToAdd = [];
+    if (courseType === '2_cuat1') {
+      itemsToAdd = data.classes.filter(c => {
+        if (c.is_prac) {
+          if (group === 'none') return false;
+          if (group !== 'all' && c.group !== 'all' && c.group !== group) return false;
+        }
+        return true;
+      }).map(c => {
+        const cal = c.is_exam ? 'exam' : (c.is_prac ? 'prac' : 'uni');
+        let title = c.subject;
+        if (c.is_exam) title = `Examen: ${c.subject}`;
+        else if (c.is_prac) title = `Práctica: ${c.subject}${c.group !== 'all' ? ' (' + c.group + ')' : ''}`;
+        return {
+          id: crypto.randomUUID(),
+          title: title,
+          subject: c.subject,
+          cal: cal,
+          date: c.date,
+          start: c.start,
+          end: c.end,
+          notes: 'Horario oficial UCLM'
+        };
+      });
+    } else if (courseType === 'exams_2' || courseType === 'exams_1') {
+      const targetCourse = courseType === 'exams_2' ? 2 : 1;
+      itemsToAdd = data.exams.filter(e => e.course === targetCourse).map(e => {
+        const [st, et] = e.time.split('-');
+        return {
+          id: crypto.randomUUID(),
+          title: `Examen: ${e.subject}`,
+          subject: e.subject,
+          cal: 'exam',
+          date: e.date,
+          start: st,
+          end: et,
+          notes: 'Convocatoria oficial UCLM'
+        };
+      });
+    }
+
+    if (!itemsToAdd.length) {
+      alert('No se encontraron citas para la selección.');
+      return;
+    }
+
+    // Volcar a la agenda y a la nube
+    for (const ev of itemsToAdd) {
+      state.events.push(ev);
+      pushOp({ op: 'upsert', row: toRow(ev) });
+    }
+
+    render();
+    importDlg.close();
+    alert(`¡Horario oficial cargado a la perfección! Se han añadido ${itemsToAdd.length} clases y prácticas verificadas.`);
+  };
 }
 
 function renderUclmPreview() {

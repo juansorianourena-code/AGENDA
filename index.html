@@ -18,17 +18,20 @@
         <h1 id="title"></h1>
       </div>
       <div class="top-actions">
-        <button class="ghost icon-btn" id="brainDumpBtn" title="Vaciado rápido de mente">🧠 Apuntar idea</button>
-        <button class="ghost icon-btn" id="studyPlanBtn" title="Organizar estudio de exámenes">📚 Plan de estudio</button>
-        <button class="ghost icon-btn" id="importBtn" title="Subir horario universidad (PDF)">📄 Subir horario</button>
-        <button class="add" id="addBtn" aria-label="Añadir evento">+</button>
+        <button class="add" id="addBtn" aria-label="Añadir evento" title="Añadir tarea">+</button>
       </div>
     </header>
 
+    <div class="quick-toolbar">
+      <button class="tool-btn" id="studyPlanBtn">📚 Plan Exámenes</button>
+      <button class="tool-btn" id="brainDumpBtn">🧠 Apuntar Idea</button>
+      <button class="tool-btn" id="importBtn">📄 Horario UCLM</button>
+    </div>
+
     <nav class="bar">
       <div class="tabs" id="tabs">
-        <button data-view="focus">🎯 Hoy (Enfoque)</button>
         <button data-view="agenda">Agenda</button>
+        <button data-view="focus">🎯 Hoy</button>
         <button data-view="day">Día</button>
         <button data-view="week">Semana</button>
         <button data-view="month">Mes</button>
@@ -143,24 +146,50 @@
     </form>
   </dialog>
 
-  <!-- Diálogo Importar Horario PDF UCLM Adaptable -->
+  <!-- Diálogo Importar Horario UCLM Adaptable -->
   <dialog id="importDlg" class="wide-dialog">
     <div class="dlg-content">
-      <h2>Subir Horario / Exámenes (UCLM)</h2>
-      <p class="hint">Sube el PDF de tu curso o el calendario de exámenes. Podrás elegir exactamente qué asignaturas cursas, si quieres prácticas o no, y tu grupo.</p>
+      <h2>Cargar Horario / Exámenes (UCLM)</h2>
+      <p class="hint">Elige qué curso tienes y la app volcará automáticamente los datos oficiales exactos sin errores de lectura.</p>
 
-      <!-- Zona de subida -->
-      <div class="upload-zone" id="dropZone">
-        <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none">
-        <div class="upload-prompt" id="uploadPrompt">
-          <span class="upload-icon">📄</span>
-          <p><b>Arrastra tu PDF aquí</b> o <button type="button" class="link-btn" id="browseBtn">selecciona tu archivo</button></p>
-          <small class="muted-text">Detecta automáticamente asignaturas, prácticas G1/G2/G3, pruebas y exámenes</small>
+      <div class="config-box" style="margin-bottom:14px;background:#f0f4eb;border-color:var(--olive);">
+        <h4 style="color:var(--olive);">⚡ Carga Rápida Oficial (100% Precisa sin fallos)</h4>
+        <div class="row">
+          <label style="flex:1;">¿Qué curso quieres cargar?
+            <select id="quickCourseSelect">
+              <option value="2_cuat1" selected>2º Curso - 1º Cuatrimestre (Clases y Prácticas)</option>
+              <option value="exams_2">Exámenes 2º Curso (Convocatoria Enero/Junio)</option>
+              <option value="exams_1">Exámenes 1º Curso (Asignaturas sueltas)</option>
+            </select>
+          </label>
+          <label style="flex:1;">Subgrupo de Prácticas:
+            <select id="quickGroupSelect">
+              <option value="G1" selected>Grupo 1 (G1)</option>
+              <option value="G2">Grupo 2 (G2)</option>
+              <option value="G3">Grupo 3 (G3)</option>
+              <option value="none">Sin prácticas (solo teoría)</option>
+            </select>
+          </label>
         </div>
-        <div id="parseProgress" class="parse-progress" style="display:none">
-          <p id="parseStatusText">Analizando semanas, asignaturas y fechas...</p>
+        <div style="margin-top:10px;">
+          <button type="button" class="primary" id="btnApplyOfficial">✨ Aplicar Horario Oficial de mi Curso</button>
         </div>
       </div>
+
+      <details style="margin-top:12px;font-size:12px;color:var(--muted);">
+        <summary style="cursor:pointer;font-weight:600;">O subir otro archivo PDF manualmente...</summary>
+        <!-- Zona de subida -->
+        <div class="upload-zone" id="dropZone" style="margin-top:10px;">
+          <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none">
+          <div class="upload-prompt" id="uploadPrompt">
+            <span class="upload-icon">📄</span>
+            <p><b>Arrastra tu PDF aquí</b> o <button type="button" class="link-btn" id="browseBtn">selecciona tu archivo</button></p>
+          </div>
+          <div id="parseProgress" class="parse-progress" style="display:none">
+            <p id="parseStatusText">Analizando documento...</p>
+          </div>
+        </div>
+      </details>
 
       <!-- Paso 2: Filtros Inteligentes (Aparece tras analizar el PDF) -->
       <div id="filterOptions" class="import-step" style="display:none; margin-top:16px;">
@@ -282,6 +311,7 @@
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/legacy/build/pdf.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="uclm_data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -18,21 +18,26 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 .app { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
 
-.top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
-.sub { margin: 0; color: var(--olive); font-size: 14px; text-transform: capitalize; }
-h1 { margin: 2px 0 0; font-size: 34px; font-weight: 600; letter-spacing: -0.02em; text-transform: capitalize; }
-.add { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--navy); color: var(--white); font-size: 26px; line-height: 1; }
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.sub { margin: 0; color: var(--olive); font-size: 13px; font-weight: 500; text-transform: capitalize; }
+h1 { margin: 2px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; text-transform: capitalize; }
+.add { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--navy); color: var(--white); font-size: 24px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(31,42,68,0.2); }
 
-.bar { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.tabs, .nav { display: flex; background: var(--white); border: 1px solid var(--sand); border-radius: 10px; overflow: hidden; }
-.tabs button, .nav button { border: 0; background: none; padding: 8px 14px; }
+/* Barra de herramientas minimalista */
+.quick-toolbar { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
+.tool-btn { border: 1px solid var(--sand); background: var(--white); border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 500; color: var(--ink); white-space: nowrap; cursor: pointer; transition: all .15s; }
+.tool-btn:active { background: #ede7d8; }
+
+.bar { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.tabs, .nav { display: flex; background: var(--white); border: 1px solid var(--sand); border-radius: 10px; overflow-x: auto; max-width: 100%; }
+.tabs button, .nav button { border: 0; background: none; padding: 7px 12px; font-size: 13px; font-weight: 500; white-space: nowrap; }
 .tabs button.on { background: var(--navy); color: var(--white); }
 .nav button + button { border-left: 1px solid var(--sand); }
 
-.legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--sand); background: var(--white); border-radius: 999px; padding: 4px 12px; font-size: 13px; }
-.chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
-.chip.off { opacity: .4; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--sand); background: var(--white); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.chip.off { opacity: .35; }
 .chip.off i { background: transparent; border: 1px solid var(--c); }
 
 #view { background: var(--white); border: 1px solid var(--sand); border-radius: 14px; overflow: hidden; }
