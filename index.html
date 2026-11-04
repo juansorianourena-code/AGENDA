@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#f5f0e6">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Agenda">
   <title>Agenda</title>
   <link rel="stylesheet" href="styles.css">
@@ -18,26 +19,31 @@
         <h1 id="title"></h1>
       </div>
       <div class="top-actions">
-        <button class="add" id="addBtn" aria-label="Añadir evento" title="Añadir tarea">+</button>
+        <button class="settings-top-btn" id="settingsBtn" aria-label="Ajustes" title="Ajustes y Personalización">⚙️</button>
+        <button class="add" id="addBtn" aria-label="Añadir evento" title="Añadir clase, tarea o evento">+</button>
       </div>
     </header>
 
     <div class="quick-toolbar">
+      <button class="tool-btn" id="importBtn">📄 Horario UCLM</button>
+      <button class="tool-btn" id="openSettingsToolbarBtn">⚙️ Grupos y Ajustes</button>
       <button class="tool-btn" id="studyPlanBtn">📚 Plan Exámenes</button>
       <button class="tool-btn" id="brainDumpBtn">🧠 Apuntar Idea</button>
-      <button class="tool-btn" id="importBtn">📄 Horario UCLM</button>
     </div>
+
+    <div id="countdownBar" class="countdown-bar"></div>
 
     <nav class="bar">
       <div class="tabs" id="tabs">
         <button data-view="agenda">Agenda</button>
         <button data-view="focus">🎯 Hoy</button>
-        <button data-view="day">Día</button>
         <button data-view="week">Semana</button>
+        <button data-view="day">Día</button>
+        <button data-view="subjects">🎓 Asignaturas</button>
+        <button data-view="tasks">✅ Tareas</button>
         <button data-view="month">Mes</button>
-        <button data-view="year">Año</button>
       </div>
-      <div class="nav">
+      <div class="nav" id="dateNav">
         <button id="prev" aria-label="Anterior">‹</button>
         <button id="today">Hoy</button>
         <button id="next" aria-label="Siguiente">›</button>
@@ -155,33 +161,34 @@
       <div class="config-box" style="margin-bottom:14px;background:#f0f4eb;border-color:var(--olive);">
         <h4 style="color:var(--olive);">⚡ Carga Rápida Oficial (100% Precisa sin fallos)</h4>
         <div class="row">
-          <label style="flex:1;">¿Qué curso quieres cargar?
+          <label style="flex:1;">¿Qué quieres cargar?
             <select id="quickCourseSelect">
               <option value="2_cuat1" selected>2º Curso - 1º Cuatrimestre (Clases y Prácticas)</option>
               <option value="exams_2">Exámenes 2º Curso (Convocatoria Enero/Junio)</option>
               <option value="exams_1">Exámenes 1º Curso (Asignaturas sueltas)</option>
             </select>
           </label>
-          <label style="flex:1;">Subgrupo de Prácticas:
+          <label style="flex:1;" id="quickGlobalGroupWrap">Grupo por defecto:
             <select id="quickGroupSelect">
-              <option value="G1" selected>Grupo 1 (G1)</option>
+              <option value="G3" selected>Grupo 3 (G3)</option>
               <option value="G2">Grupo 2 (G2)</option>
-              <option value="G3">Grupo 3 (G3)</option>
+              <option value="G1">Grupo 1 (G1)</option>
               <option value="all">Todos los grupos</option>
-              <option value="none">Sin prácticas (solo teoría)</option>
+              <option value="none">Sin prácticas</option>
             </select>
           </label>
         </div>
 
         <div id="quickSubjectsContainer" style="margin-top:12px;">
-          <label style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:6px;">
-            1. Asignaturas que cursas (marca solo las tuyas):
+          <label style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:4px;">
+            1. Elige tus asignaturas y tu grupo de prácticas en cada una:
           </label>
-          <div class="sub-tag-list" id="quickSubjectList"></div>
+          <p class="hint" style="margin:0 0 8px;font-size:11px;">Puedes poner <b>G2 en Edafología</b> y <b>G3 en las demás</b> (o marcar varios grupos a la vez en una asignatura).</p>
+          <div class="subj-group-editor" id="quickSubjectList"></div>
         </div>
 
         <div style="margin-top:12px;">
-          <button type="button" class="primary" id="btnApplyOfficial">✨ Aplicar Horario Oficial de mi Curso</button>
+          <button type="button" class="primary" id="btnApplyOfficial" style="width:100%;font-weight:600;padding:12px;">✨ Aplicar Horario Oficial en 1 Toque</button>
         </div>
       </div>
 
@@ -331,6 +338,92 @@
         <button type="submit" class="primary">Guardar cambios</button>
       </div>
     </form>
+  </dialog>
+
+  <!-- Diálogo Ajustes y Personalización Total -->
+  <dialog id="settingsDlg" class="wide-dialog">
+    <div class="dlg-content">
+      <h2>⚙️ Ajustes y Personalización</h2>
+      <p class="hint">Adapta la aplicación a tu gusto: cambia tus grupos de prácticas por asignatura, el formato del calendario en iPhone o los colores.</p>
+
+      <!-- 1. Grupos de prácticas por asignatura en vivo -->
+      <div class="config-box" style="margin-bottom:14px;background:#f7f3ea;">
+        <h4>🧪 1. Mi Grupo de Prácticas por Asignatura</h4>
+        <p class="hint" style="margin:0 0 8px;font-size:12px;">Marca en qué grupo estás en cada asignatura (por ejemplo, <b>G2 en Edafología</b> y <b>G3 en el resto</b>). Puedes marcar varios si cambias según la semana.</p>
+        <div id="settingsSubjectGroups" class="subj-group-editor"></div>
+        <button type="button" class="primary" id="btnSyncGroupsNow" style="width:100%;margin-top:10px;font-weight:600;">
+          🔄 Actualizar mis prácticas en el calendario ahora
+        </button>
+      </div>
+
+      <!-- 2. Formato de Vista Semanal y Pantalla -->
+      <div class="config-box" style="margin-bottom:14px;">
+        <h4>📱 2. Formato de Calendario en iPhone</h4>
+        <div class="row">
+          <label style="flex:1;">Formato de Vista Semanal:
+            <select id="prefWeekMode">
+              <option value="5days">Lunes a Viernes (5 días - Ideal iPhone)</option>
+              <option value="3days">Vista de 3 días grandes</option>
+              <option value="cards">Tarjetas semanales (Lectura ultra clara)</option>
+              <option value="7days">Semana completa (Lunes a Domingo)</option>
+            </select>
+          </label>
+          <label style="flex:1;">Nombres en el calendario:
+            <select id="prefShortNames">
+              <option value="short">Nombres cortos limpios (Edafología, Motores...)</option>
+              <option value="full">Nombres largos completos</option>
+            </select>
+          </label>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <label style="flex:1;">Tamaño de las horas:
+            <select id="prefHourHeight">
+              <option value="42">Compacto</option>
+              <option value="54">Normal (Recomendado)</option>
+              <option value="68">Grande (Más espacio vertical)</option>
+            </select>
+          </label>
+          <label style="flex:1;">Barra cuenta atrás de exámenes:
+            <select id="prefShowCountdown">
+              <option value="yes">Mostrar arriba</option>
+              <option value="no">Ocultar</option>
+            </select>
+          </label>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <label style="flex:1;">Hora de inicio de rejilla:
+            <select id="prefStartHour">
+              <option value="7">07:00</option>
+              <option value="8">08:00</option>
+              <option value="9">09:00</option>
+            </select>
+          </label>
+          <label style="flex:1;">Hora de fin de rejilla:
+            <select id="prefEndHour">
+              <option value="20">20:00</option>
+              <option value="21">21:00</option>
+              <option value="22">22:00</option>
+              <option value="23">23:00</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- 3. Colores por asignatura -->
+      <div class="config-box" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h4 style="margin:0;">🎨 3. Color de cada Asignatura</h4>
+          <button type="button" class="ghost" id="btnResetColors" style="padding:4px 8px;font-size:11px;">Restaurar colores</button>
+        </div>
+        <div id="settingsColorList" class="color-picker-list"></div>
+      </div>
+
+      <div class="actions" style="margin-top:16px;">
+        <button type="button" class="ghost" id="settingsClose">Cerrar</button>
+        <span class="grow"></span>
+        <button type="button" class="primary" id="settingsSaveBtn">Guardar ajustes</button>
+      </div>
+    </div>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/legacy/build/pdf.js"></script>
