@@ -225,22 +225,94 @@ function timeGrid(days) {
     `<div>${eventsOn(iso(d)).filter(e => !e.start).map(e =>
       `<button class="ev chipev" data-id="${e.id}" style="--c:${calById[e.cal].color}">${esc(e.title)}</button>`).join('')}</div>`).join('');
   const hours = [...Array(n)].map((_, i) => `<div>${pad(H0 + i)}:00</div>`).join('');
+
+  // Algoritmo para evitar solapamientos horizontales entre eventos coincidentes
+  function layoutDayEvents(evs) {
+    if (!evs.length) return [];
+    const timed = evs.filter(e => e.start).sort((a, b) => mins(a.start) - mins(b.start) || (b.end ? mins(b.end) : 0) - (a.end ? mins(a.end) : 0));
+    if (!timed.length) return [];
+
+    // Agrupar en clusters continuos de solapamiento
+    const clusters = [];
+    let curCluster = [timed[0]];
+    let maxEnd = timed[0].end ? mins(timed[0].end) : mins(timed[0].start) + 60;
+
+    for (let i = 1; i < timed.length; i++) {
+      const e = timed[i];
+      const startMin = mins(e.start);
+      const endMin = e.end ? mins(e.end) : startMin + 60;
+      if (startMin < maxEnd) {
+        curCluster.push(e);
+        maxEnd = Math.max(maxEnd, endMin);
+      } else {
+        clusters.push(curCluster);
+        curCluster = [e];
+        maxEnd = endMin;
+      }
+    }
+    clusters.push(curCluster);
+
+    // Asignar columnas dentro de cada cluster
+    const layouted = [];
+    clusters.forEach(cluster => {
+      const columns = []; // columnas con el tiempo de fin del último evento
+      cluster.forEach(e => {
+        const startMin = mins(e.start);
+        const endMin = e.end ? mins(e.end) : startMin + 60;
+        let placed = false;
+        for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+          if (columns[colIdx] <= startMin) {
+            columns[colIdx] = endMin;
+            e._col = colIdx;
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          e._col = columns.length;
+          columns.push(endMin);
+        }
+      });
+      const totalCols = columns.length;
+      cluster.forEach(e => {
+        e._totalCols = totalCols;
+        layouted.push(e);
+      });
+    });
+
+    return layouted;
+  }
+
   const colsHtml = days.map(d => {
     const ds = iso(d);
-    const evs = eventsOn(ds).filter(e => e.start).map(e => {
+    const dayEvs = eventsOn(ds);
+    const layouted = layoutDayEvents(dayEvs);
+
+    const evsHtml = layouted.map(e => {
       const s = Math.max(mins(e.start), H0 * 60);
       const end = Math.min(e.end ? mins(e.end) : mins(e.start) + 60, H1 * 60);
       const top = (s - H0 * 60) / 60 * HOUR;
       const h = Math.max((end - s) / 60 * HOUR, 22);
-      return `<button class="ev" data-id="${e.id}" style="--c:${calById[e.cal].color};top:${top}px;height:${h}px">${esc(e.title)}<small>${e.start}${e.end ? '–' + e.end : ''}</small></button>`;
+
+      const totalCols = e._totalCols || 1;
+      const colIdx = e._col || 0;
+      const widthPct = (100 / totalCols).toFixed(2);
+      const leftPct = (colIdx * (100 / totalCols)).toFixed(2);
+
+      return `<button class="ev" data-id="${e.id}" style="--c:${calById[e.cal].color};top:${top}px;height:${h}px;left:calc(${leftPct}% + 1px);width:calc(${widthPct}% - 2px);">
+        ${esc(e.title)}
+        <small>${e.start}${e.end ? '–' + e.end : ''}</small>
+      </button>`;
     }).join('');
+
     let now = '';
     if (ds === todayISO()) {
       const t = new Date(); const m = t.getHours() * 60 + t.getMinutes();
       if (m >= H0 * 60 && m <= H1 * 60) now = `<div class="now" style="top:${(m - H0 * 60) / 60 * HOUR}px"></div>`;
     }
-    return `<div class="tg-col ${ds === todayISO() ? 'today' : ''}" data-date="${ds}">${evs}${now}</div>`;
+    return `<div class="tg-col ${ds === todayISO() ? 'today' : ''}" data-date="${ds}">${evsHtml}${now}</div>`;
   }).join('');
+
   return `<div style="--cols:${cols};--n:${n}">
     <div class="tg-head"><div></div>${head}</div>
     <div class="tg-allday"><div></div>${allday}</div>
@@ -310,6 +382,62 @@ const importCancel = $('importCancel');
 let parsedEventsRaw = [];
 let detectedSubjects = new Set();
 let activeSelectedSubjects = new Set();
+
+// Asignaturas oficiales de la UCLM en la Escuela de Agrónomos (normalizadas)
+const OFFICIAL_SUBJECTS = [
+  'EDAFOLOGÍA Y CLIMATOLOGÍA',
+  'GENÉTICA Y APLICACIONES A LA INGENIERÍA',
+  'CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE',
+  'MOTORES',
+  'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN',
+  'CÁLCULO DE ESTRUCTURAS',
+  'FITOTECNIA GENERAL',
+  'FITOTECNIA',
+  'FÍSICA I',
+  'FÍSICA II',
+  'QUÍMICA',
+  'QUÍMICA AGRÍCOLA',
+  'EXPRESIÓN GRÁFICA',
+  'ÁLGEBRA',
+  'BIOLOGÍA I',
+  'BIOLOGÍA II',
+  'ESTADÍSTICA Y MÉTODOS COMPUTACIONALES',
+  'CÁLCULO Y ECUACIONES DIFERENCIALES',
+  'EMPRESA',
+  'BASES DE LA PRODUCCIÓN ANIMAL',
+  'HIDRAÚLICA',
+  'TOPOGRAFÍA',
+  'CULTIVOS HERBÁCEOS',
+  'ARBORICULTURA GENERAL. VITICULTURA',
+  'ARBORICULTURA',
+  'PRODUCCIÓN ANIMAL I',
+  'PRODUCCIÓN ANIMAL II',
+  'PRODUCCIÓN ANIMAL III',
+  'PRODUCCIÓN ANIMAL IV Y TRATAMIENTO DE RESIDUOS AGROPECUARIOS',
+  'CONSTRUCCIONES AGROPECUARIAS',
+  'PROTECCIÓN DE CULTIVOS',
+  'ECONOMÍA Y COMERCIALIZACIÓN',
+  'SISTEMAS Y TECNOLOGÍAS DEL RIEGO',
+  'MAQUINARIA AGRÍCOLA',
+  'PRODUCCIÓN ECOLÓGICA E INTEGRADA',
+  'PLANIFICACIÓN DE INFRAESTRUCTURAS Y MECANIZACIÓN AGRARIA',
+  'PROYECTOS',
+  'HORTICULTURA',
+  'INGENIERÍA MECÁNICA Y ENERGÉTICA EN LA AGRICULTURA',
+  'PLANIFICACIÓN AGRONÓMICA DE CULTIVOS'
+];
+
+function cleanSubjectName(rawBlock) {
+  const norm = rawBlock.toUpperCase();
+  for (const s of OFFICIAL_SUBJECTS) {
+    if (norm.includes(s)) return s;
+  }
+  // Si no coincide exactamente con la lista, limpiar patrones conocidos
+  let clean = rawBlock.split('\n')[0] || rawBlock;
+  clean = clean.replace(/\b(TEORÍA|PRÁCTICAS|PRUEBA|EVALUACIÓN|AULA|ED\.|MANUEL|ALONSO|PEÑA|G\d|S\d|SALA ORD).*$/i, '').trim();
+  clean = clean.replace(/[:,-]/g, '').trim();
+  return clean || 'Asignatura';
+}
 
 // Diccionario de asignaturas oficiales por curso en la Escuela de Agrónomos UCLM
 const UCLM_COURSES = {
@@ -516,13 +644,11 @@ async function parseUclmPdf(file) {
           const fullBlock = textLines.join(' ');
           if (!fullBlock || fullBlock.length < 3) return;
 
-          let subjectName = textLines[0] || 'Asignatura';
-          subjectName = subjectName.replace(/\b(TEORÍA|PRÁCTICAS|S\d+|AULA|GRUPO|G\d+)\b.*/i, '').trim();
-          if (subjectName.length < 3 && textLines[1]) subjectName = textLines[1];
-          subjectName = subjectName.replace(/[:,-]/g, '').trim();
+          // Nombre de asignatura limpio y sin profesores
+          const subjectName = cleanSubjectName(fullBlock);
 
           const isExam = /prueba|evaluaci[oó]n|examen|parcial/i.test(fullBlock);
-          const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo/i.test(fullBlock);
+          const isPrac = /pr[aá]ctica|lab|laboratorio|s\d+\s*pr[aá]cticas|campo|visita/i.test(fullBlock);
           const cal = isExam ? 'exam' : (isPrac ? 'prac' : 'uni');
 
           let groupTag = 'all';
@@ -531,11 +657,16 @@ async function parseUclmPdf(file) {
 
           const course = detectCourseForSubject(subjectName);
 
+          // Título limpio: únicamente tipo y asignatura (sin profesores ni edificios)
+          let cleanTitle = subjectName;
+          if (isExam) cleanTitle = `Examen: ${subjectName}`;
+          else if (isPrac) cleanTitle = `Práctica: ${subjectName}${groupTag !== 'all' ? ' (' + groupTag + ')' : ''}`;
+
           if (subjectName.length > 2) {
             subjects.add(subjectName);
             events.push({
               id: crypto.randomUUID(),
-              title: isExam ? `Examen: ${subjectName}` : (isPrac ? `Práctica: ${subjectName}` : subjectName),
+              title: cleanTitle,
               subject: subjectName,
               cal,
               date: col.date,
@@ -546,7 +677,7 @@ async function parseUclmPdf(file) {
               isExam: isExam,
               course: course,
               convocatoria: 'ordinaria',
-              notes: fullBlock,
+              notes: fullBlock, // Los detalles como aula o profesor quedan guardados en notas por si los necesitas, pero no en el título
               rawText: fullBlock
             });
           }
