@@ -1965,788 +1965,308 @@ window.UCLM_OFFICIAL_DATA = {
   ],
   "exams": [
     {
-      "date": "2027-01-04",
-      "time": "16:00-19:00",
-      "subject": "MOTORES",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-05",
-      "time": "16:00-19:00",
-      "subject": "EXPRESIÓN GRÁFICA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-07",
-      "time": "16:00-19:00",
-      "subject": "QUÍMICA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-08",
-      "time": "09:00-12:00",
       "subject": "FÍSICA I",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-01-08",
       "time": "09:00-12:00",
-      "subject": "CULTIVOS HERBÁCEOS",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-08",
-      "time": "16:00-19:00",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "09:00-12:00",
-      "subject": "MOTORES",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ECOLÓGICA E INTEGRADA",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "09:00-12:00",
-      "subject": "ARBORICULTURA GENERAL. VITICULTURA",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL III",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "09:00-12:00",
-      "subject": "CONSTRUCCIONES AGROPECUARIAS",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-11",
-      "time": "16:00-19:00",
-      "subject": "ÁLGEBRA",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-01-11",
-      "time": "16:00-19:00",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-12",
-      "time": "09:00-12:00",
       "subject": "EXPRESIÓN GRÁFICA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-01-12",
-      "time": "16:00-19:00",
-      "subject": "BIOLOGÍA I",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
+      "subject": "QUÍMICA",
       "date": "2027-01-14",
       "time": "09:00-12:00",
-      "subject": "QUÍMICA",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-01-15",
-      "time": "09:00-12:00",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-15",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL IV Y TRATAMIENTO",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-15",
-      "time": "09:00-12:00",
-      "subject": "DE RESIDUOS AGROPECUARIOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-18",
-      "time": "09:00-12:00",
       "subject": "ÁLGEBRA",
+      "date": "2027-01-18",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-01-18",
-      "time": "09:00-12:00",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-18",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL I",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-01-19",
-      "time": "09:00-12:00",
       "subject": "BIOLOGÍA I",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-01-20",
       "time": "09:00-12:00",
-      "subject": "PROYECTOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-17",
-      "time": "16:00-19:00",
-      "subject": "HIDRAÚLICA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-18",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO Y ECUACIONES DIFERENCIALES",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-19",
-      "time": "09:00-12:00",
       "subject": "BASES DE LA PRODUCCIÓN ANIMAL",
-      "course": 2,
-      "is_exam": true
-    },
-    {
       "date": "2027-05-19",
       "time": "09:00-12:00",
-      "subject": "BASES DE LA PRODUCCIÓN ANIMAL",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-19",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL II",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-19",
-      "time": "16:00-19:00",
-      "subject": "FITOTECNIA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-20",
-      "time": "09:00-12:00",
-      "subject": "ESTADÍSTICA Y MÉTODOS",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-20",
-      "time": "09:00-12:00",
-      "subject": "HORTICULTURA",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-21",
-      "time": "09:00-12:00",
       "subject": "FÍSICA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-05-21",
       "time": "09:00-12:00",
-      "subject": "FÍSICA II",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-21",
-      "time": "09:00-12:00",
-      "subject": "QUÍMICA AGRÍCOLA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-21",
-      "time": "09:00-12:00",
-      "subject": "QUÍMICA AGRÍCOLA",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-24",
-      "time": "09:00-12:00",
-      "subject": "HIDRAÚLICA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-25",
-      "time": "09:00-12:00",
       "subject": "CÁLCULO Y ECUACIONES DIFERENCIALES",
+      "date": "2027-05-25",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-25",
-      "time": "09:00-12:00",
-      "subject": "ECONOMÍA Y COMERCIALIZACIÓN",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-25",
-      "time": "09:00-12:00",
-      "subject": "SISTEMAS Y TECNOLOGÍAS DEL RIEGO",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-25",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-25",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-26",
-      "time": "09:00-12:00",
-      "subject": "FITOTECNIA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-26",
-      "time": "16:00-19:00",
       "subject": "BIOLOGÍA II",
+      "date": "2027-06-02",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-26",
-      "time": "16:00-19:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-27",
-      "time": "16:00-19:00",
-      "subject": "TOPOGRAFÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-27",
-      "time": "16:00-19:00",
       "subject": "EMPRESA",
+      "date": "2027-06-04",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-05-31",
-      "time": "16:00-19:00",
       "subject": "BIOLOGÍA I",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-05-31",
-      "time": "16:00-19:00",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-01",
+      "date": "2027-06-07",
       "time": "09:00-12:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-01",
-      "time": "09:00-12:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-01",
-      "time": "16:00-19:00",
       "subject": "FÍSICA I",
+      "date": "2027-06-09",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-01",
-      "time": "16:00-19:00",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-02",
-      "time": "09:00-12:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-02",
-      "time": "09:00-12:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-02",
-      "time": "09:00-12:00",
-      "subject": "MAQUINARIA AGRÍCOLA",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-02",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL III",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-02",
-      "time": "16:00-19:00",
       "subject": "ÁLGEBRA",
+      "date": "2027-06-11",
+      "time": "09:00-12:00",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-03",
-      "time": "09:00-12:00",
-      "subject": "TOPOGRAFÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-03",
-      "time": "09:00-12:00",
-      "subject": "EMPRESA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-03",
-      "time": "09:00-12:00",
-      "subject": "PLANIFICACIÓN AGRONÓMICA DE CULTIVOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-07",
-      "time": "09:00-12:00",
-      "subject": "BIOLOGÍA I",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-07",
-      "time": "09:00-12:00",
-      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-07",
-      "time": "16:00-19:00",
-      "subject": "CONSTRUCCIONES AGROPECUARIAS",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-08",
-      "time": "09:00-12:00",
-      "subject": "FÍSICA I",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-08",
-      "time": "09:00-12:00",
-      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-08",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL IV Y TRATAMIENTO",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-08",
-      "time": "16:00-19:00",
-      "subject": "DE RESIDUOS AGROPECUARIOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-09",
-      "time": "09:00-12:00",
-      "subject": "ÁLGEBRA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-09",
-      "time": "16:00-19:00",
-      "subject": "PROTECCIÓN DE CULTIVOS",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-09",
-      "time": "16:00-19:00",
-      "subject": "PROYECTOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-10",
-      "time": "16:00-19:00",
-      "subject": "CULTIVOS HERBÁCEOS",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-14",
-      "time": "09:00-12:00",
       "subject": "QUÍMICA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-06-14",
       "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL I",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-14",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ECOLÓGICA INTEGRADA",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-14",
-      "time": "16:00-19:00",
-      "subject": "ESTADÍSTICA Y MÉTODOS",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-15",
-      "time": "09:00-12:00",
-      "subject": "HIDRAÚLICA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-15",
-      "time": "09:00-12:00",
-      "subject": "QUÍMICA AGRÍCOLA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-15",
-      "time": "09:00-12:00",
-      "subject": "QUÍMICA AGRÍCOLA",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-15",
-      "time": "09:00-12:00",
-      "subject": "HORTICULTURA",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-15",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO Y ECUACIONES DIFERENCIALES",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-15",
-      "time": "16:00-19:00",
-      "subject": "TOPOGRAFÍA",
-      "course": 2,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-16",
-      "time": "09:00-12:00",
       "subject": "BASES DE LA PRODUCCIÓN ANIMAL",
-      "course": 2,
-      "is_exam": true
-    },
-    {
       "date": "2027-06-16",
       "time": "09:00-12:00",
-      "subject": "BASES DE LA PRODUCCIÓN ANIMAL",
-      "course": 3,
-      "is_exam": true
+      "course": 1,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-16",
-      "time": "09:00-12:00",
-      "subject": "PLANIFICACIÓN AGRONÓMICA DE CULTIVOS",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-17",
-      "time": "09:00-12:00",
-      "subject": "MOTORES",
-      "course": 2,
-      "is_exam": true
-    },
-    {
+      "subject": "EXPRESIÓN GRÁFICA",
       "date": "2027-06-18",
       "time": "09:00-12:00",
-      "subject": "EXPRESIÓN GRÁFICA",
       "course": 1,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-21",
-      "time": "09:00-12:00",
-      "subject": "ESTADÍSTICA Y MÉTODOS",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-21",
-      "time": "16:00-19:00",
-      "subject": "MECANIZACIÓN AGRARIA",
-      "course": 4,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-21",
-      "time": "16:00-19:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-21",
-      "time": "16:00-19:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-22",
-      "time": "09:00-12:00",
       "subject": "CÁLCULO Y ECUACIONES DIFERENCIALES",
-      "course": 1,
-      "is_exam": true
-    },
-    {
       "date": "2027-06-22",
       "time": "09:00-12:00",
+      "course": 1,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "BIOLOGÍA II",
+      "date": "2027-06-28",
+      "time": "09:00-12:00",
+      "course": 1,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "EMPRESA",
+      "date": "2027-06-30",
+      "time": "09:00-12:00",
+      "course": 1,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "FÍSICA II",
+      "date": "2027-07-02",
+      "time": "09:00-12:00",
+      "course": 1,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 6 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "MOTORES",
+      "date": "2027-01-11",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "date": "2027-01-13",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "date": "2027-01-15",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "date": "2027-01-19",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "ESTADÍSTICA Y MÉTODOS COMPUTACIONALES",
+      "date": "2027-05-20",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "HIDRÁULICA",
+      "date": "2027-05-24",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "FITOTECNIA GENERAL",
+      "date": "2027-05-26",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
+      "date": "2027-06-01",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 y SALA ORD. 30 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
       "subject": "TOPOGRAFÍA",
+      "date": "2027-06-03",
+      "time": "09:00-12:00",
       "course": 2,
-      "is_exam": true
+      "convocatoria": "ordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-22",
+      "subject": "GENÉTICA Y APLICACIONES A LA INGENIERÍA",
+      "date": "2027-06-08",
       "time": "09:00-12:00",
-      "subject": "ARBORICULTURA GENERAL. VITICULTURA",
-      "course": 3,
-      "is_exam": true
+      "course": 2,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-22",
+      "subject": "EDAFOLOGÍA Y CLIMATOLOGÍA",
+      "date": "2027-06-10",
       "time": "09:00-12:00",
-      "subject": "SISTEMAS Y TECNOLOGÍAS DEL RIEGO",
-      "course": 3,
-      "is_exam": true
+      "course": 2,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     },
     {
+      "subject": "HIDRÁULICA",
+      "date": "2027-06-15",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "MOTORES",
+      "date": "2027-06-17",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "ESTADÍSTICA Y MÉTODOS COMPUTACIONALES",
+      "date": "2027-06-21",
+      "time": "09:00-12:00",
+      "course": 2,
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
+    },
+    {
+      "subject": "TOPOGRAFÍA",
       "date": "2027-06-23",
-      "time": "16:00-19:00",
-      "subject": "EMPRESA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-24",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-24",
-      "time": "16:00-19:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
+      "time": "09:00-12:00",
       "course": 2,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-25",
-      "time": "16:00-19:00",
-      "subject": "FÍSICA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-25",
-      "time": "16:00-19:00",
-      "subject": "FÍSICA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-28",
+      "subject": "CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE",
+      "date": "2027-06-29",
       "time": "09:00-12:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-28",
-      "time": "09:00-12:00",
-      "subject": "BIOLOGÍA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-28",
-      "time": "09:00-12:00",
-      "subject": "PRODUCCIÓN ANIMAL II",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-28",
-      "time": "16:00-19:00",
-      "subject": "FITOTECNIA",
       "course": 2,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-06-30",
-      "time": "09:00-12:00",
-      "subject": "EMPRESA",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-06-30",
-      "time": "09:00-12:00",
-      "subject": "MAQUINARIA AGRÍCOLA",
-      "course": 3,
-      "is_exam": true
-    },
-    {
+      "subject": "CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN",
       "date": "2027-07-01",
       "time": "09:00-12:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-07-01",
-      "time": "09:00-12:00",
-      "subject": "CÁLCULO DE ESTRUCTURAS Y",
       "course": 2,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 y SALA ORD. 30 - ED. MANUEL ALONSO PEÑA"
     },
     {
-      "date": "2027-07-01",
-      "time": "09:00-12:00",
-      "subject": "ECONOMÍA Y COMERCIALIZACIÓN",
-      "course": 3,
-      "is_exam": true
-    },
-    {
-      "date": "2027-07-02",
-      "time": "09:00-12:00",
-      "subject": "FÍSICA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
-      "date": "2027-07-02",
-      "time": "09:00-12:00",
-      "subject": "FÍSICA II",
-      "course": 1,
-      "is_exam": true
-    },
-    {
+      "subject": "FITOTECNIA GENERAL",
       "date": "2027-07-05",
       "time": "09:00-12:00",
-      "subject": "FITOTECNIA",
       "course": 2,
-      "is_exam": true
+      "convocatoria": "extraordinaria",
+      "aula": "AULA 1 - ED. MANUEL ALONSO PEÑA"
     }
   ]
 };

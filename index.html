@@ -160,15 +160,15 @@
 
       <div class="config-box" style="margin-bottom:14px;background:#f0f4eb;border-color:var(--olive);">
         <h4 style="color:var(--olive);">⚡ Carga Rápida Oficial (100% Precisa sin fallos)</h4>
-        <div class="row">
-          <label style="flex:1;">¿Qué quieres cargar?
+        <div class="row" style="flex-wrap:wrap;">
+          <label style="flex:1;min-width:200px;">¿Qué quieres cargar?
             <select id="quickCourseSelect">
               <option value="2_cuat1" selected>2º Curso - 1º Cuatrimestre (Clases y Prácticas)</option>
-              <option value="exams_2">Exámenes 2º Curso (Convocatoria Enero/Junio)</option>
+              <option value="exams_2">Exámenes 2º Curso (Enero / Mayo-Junio)</option>
               <option value="exams_1">Exámenes 1º Curso (Asignaturas sueltas)</option>
             </select>
           </label>
-          <label style="flex:1;" id="quickGlobalGroupWrap"> Selección rápida de grupo:
+          <label style="flex:1;min-width:180px;" id="quickGlobalGroupWrap">Selección rápida de grupo:
             <select id="quickGroupSelect">
               <option value="custom" selected>Personalizado por asignatura (abajo)</option>
               <option value="G3">Poner todas en Grupo 3 (G3)</option>
@@ -178,13 +178,26 @@
               <option value="none">Sin prácticas (Solo teoría)</option>
             </select>
           </label>
+          <label style="flex:1;min-width:180px;display:none;" id="quickExamConvoWrap">Convocatoria a añadir:
+            <select id="quickExamConvoSelect">
+              <option value="ordinaria" selected>Solo Ordinaria (Enero / Mayo-Junio)</option>
+              <option value="extraordinaria">Solo Extraordinaria (Junio / Julio)</option>
+              <option value="all">Ambas (Ordinaria + Extraordinaria)</option>
+            </select>
+          </label>
         </div>
 
         <div id="quickSubjectsContainer" style="margin-top:12px;">
-          <div style="font-weight:600;font-size:12px;color:var(--navy);display:block;margin-bottom:4px;">
-            1. Toca G1, G2 o G3 en cada asignatura para marcar o desmarcar tu grupo:
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+            <div id="quickSubjTitle" style="font-weight:600;font-size:12px;color:var(--navy);">
+              1. Toca G1, G2 o G3 en cada asignatura para marcar o desmarcar tu grupo:
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button type="button" class="sg-btn" id="btnCheckAllSubjs" style="padding:3px 8px !important;font-size:11px !important;">Marcar todas</button>
+              <button type="button" class="sg-btn" id="btnUncheckAllSubjs" style="padding:3px 8px !important;font-size:11px !important;">Desmarcar todas</button>
+            </div>
           </div>
-          <p class="hint" style="margin:0 0 8px;font-size:11px;">Los botones en <b>azul oscuro (✓)</b> son los seleccionados. Puedes marcar <b>G2 en Edafología</b> y <b>G3 en las demás</b>.</p>
+          <p class="hint" id="quickSubjHint" style="margin:0 0 8px;font-size:11px;">Los botones en <b>azul oscuro (✓)</b> son los seleccionados. Puedes marcar <b>G2 en Edafología</b> y <b>G3 en las demás</b>.</p>
           <div class="subj-group-editor" id="quickSubjectList"></div>
         </div>
 

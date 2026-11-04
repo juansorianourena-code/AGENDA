@@ -1600,25 +1600,108 @@ function renderSubjectGroupRows(container, subjs, showCheckbox = true) {
   };
 }
 
+const UCLM_1ST_YEAR_EXAM_SUBJECTS = [
+  'FÍSICA I',
+  'EXPRESIÓN GRÁFICA',
+  'QUÍMICA',
+  'ÁLGEBRA',
+  'BIOLOGÍA I',
+  'BASES DE LA PRODUCCIÓN ANIMAL',
+  'FÍSICA II',
+  'CÁLCULO Y ECUACIONES DIFERENCIALES',
+  'BIOLOGÍA II',
+  'EMPRESA'
+];
+
+const UCLM_2ND_YEAR_EXAM_SUBJECTS = [
+  'MOTORES',
+  'CIENCIA Y TECNOLOGÍA DEL MEDIO AMBIENTE',
+  'EDAFOLOGÍA Y CLIMATOLOGÍA',
+  'GENÉTICA Y APLICACIONES A LA INGENIERÍA',
+  'ESTADÍSTICA Y MÉTODOS COMPUTACIONALES',
+  'HIDRÁULICA',
+  'FITOTECNIA GENERAL',
+  'CÁLCULO DE ESTRUCTURAS Y ELECTRIFICACIÓN',
+  'TOPOGRAFÍA'
+];
+
+function getActiveQuickSubjectsList() {
+  const courseType = $('quickCourseSelect') ? $('quickCourseSelect').value : '2_cuat1';
+  if (courseType === 'exams_1') return UCLM_1ST_YEAR_EXAM_SUBJECTS;
+  if (courseType === 'exams_2') return UCLM_2ND_YEAR_EXAM_SUBJECTS;
+  return UCLM_2ND_YEAR_SUBJECTS;
+}
+
 function renderQuickSubjectList() {
   const container = $('quickSubjectList');
   if (!container) return;
   const courseType = $('quickCourseSelect') ? $('quickCourseSelect').value : '2_cuat1';
+  const groupWrap = $('quickGlobalGroupWrap');
+  const convoWrap = $('quickExamConvoWrap');
+  const titleEl = $('quickSubjTitle');
+  const hintEl = $('quickSubjHint');
 
-  if (courseType === 'exams_1') {
-    const subjs1 = [
-      'FÍSICA I', 'QUÍMICA', 'EXPRESIÓN GRÁFICA', 'ÁLGEBRA', 'BIOLOGÍA I',
-      'ESTADÍSTICA Y MÉTODOS COMPUTACIONALES', 'FÍSICA II', 'CÁLCULO Y ECUACIONES DIFERENCIALES',
-      'BIOLOGÍA II', 'EMPRESA'
-    ];
-    container.innerHTML = subjs1.map(s => `
-      <label class="sub-pill checked" data-subj="${esc(s)}">
-        <input type="checkbox" class="subj-chk" checked value="${esc(s)}">
-        <span>${esc(s)}</span>
-      </label>
-    `).join('');
+  if (courseType === 'exams_1' || courseType === 'exams_2') {
+    if (groupWrap) groupWrap.style.display = 'none';
+    if (convoWrap) convoWrap.style.display = '';
+    if (titleEl) {
+      titleEl.textContent = courseType === 'exams_1'
+        ? '1. Marca las asignaturas de 1º Curso cuyos exámenes quieres añadir:'
+        : '1. Marca las asignaturas de 2º Curso cuyos exámenes quieres añadir:';
+    }
+    if (hintEl) {
+      hintEl.innerHTML = 'Desmarca las que ya tengas aprobadas o no curses (o pulsa <b>Desmarcar todas</b> y marca solo las tuyas).';
+    }
+
+    const subjs = courseType === 'exams_1' ? UCLM_1ST_YEAR_EXAM_SUBJECTS : UCLM_2ND_YEAR_EXAM_SUBJECTS;
+    const targetCourse = courseType === 'exams_1' ? 1 : 2;
+    const convoFilter = $('quickExamConvoSelect') ? $('quickExamConvoSelect').value : 'ordinaria';
+    const allExams = (window.UCLM_OFFICIAL_DATA && window.UCLM_OFFICIAL_DATA.exams) || [];
+
+    container.innerHTML = subjs.map(s => {
+      const enabled = state.prefs.subjectEnabled[s] !== false;
+      const color = getSubjectColor(s);
+      const matchingExams = allExams.filter(ex =>
+        ex.course === targetCourse &&
+        ex.subject === s &&
+        (convoFilter === 'all' || !ex.convocatoria || ex.convocatoria === convoFilter)
+      );
+      const dateBadges = matchingExams.map(ex => {
+        const [, mm, dd] = ex.date.split('-');
+        const mNames = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const mStr = mNames[parseInt(mm, 10) - 1] || mm;
+        const tag = ex.convocatoria === 'extraordinaria' ? 'Ext' : 'Ord';
+        return `<span style="font-size:11px;background:#f2ece0;color:var(--navy);padding:2px 7px;border-radius:6px;font-weight:600;">📅 ${dd} ${mStr} (${tag})</span>`;
+      }).join(' ');
+
+      return `
+        <div class="sg-row ${enabled ? '' : 'off'}" data-subj-row="${esc(s)}">
+          <label class="sg-left">
+            <input type="checkbox" class="subj-chk" value="${esc(s)}" ${enabled ? 'checked' : ''}>
+            <span class="sg-dot" style="background:${color};"></span>
+            <span>${esc(s)}</span>
+          </label>
+          <div class="sg-groups">${dateBadges}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.onclick = null;
+    container.onchange = (e) => {
+      const chk = e.target.closest('.subj-chk');
+      if (chk) {
+        state.prefs.subjectEnabled[chk.value] = chk.checked;
+        save();
+        renderQuickSubjectList();
+      }
+    };
     return;
   }
+
+  if (groupWrap) groupWrap.style.display = '';
+  if (convoWrap) convoWrap.style.display = 'none';
+  if (titleEl) titleEl.textContent = '1. Toca G1, G2 o G3 en cada asignatura para marcar o desmarcar tu grupo:';
+  if (hintEl) hintEl.innerHTML = 'Los botones en <b>azul oscuro (✓)</b> son los seleccionados. Puedes marcar <b>G2 en Edafología</b> y <b>G3 en las demás</b>.';
 
   renderSubjectGroupRows(container, UCLM_2ND_YEAR_SUBJECTS, true);
 }
@@ -1626,6 +1709,29 @@ function renderQuickSubjectList() {
 const quickCourseSelect = $('quickCourseSelect');
 if (quickCourseSelect) {
   quickCourseSelect.onchange = () => renderQuickSubjectList();
+}
+
+const quickExamConvoSelect = $('quickExamConvoSelect');
+if (quickExamConvoSelect) {
+  quickExamConvoSelect.onchange = () => renderQuickSubjectList();
+}
+
+const btnCheckAllSubjs = $('btnCheckAllSubjs');
+if (btnCheckAllSubjs) {
+  btnCheckAllSubjs.onclick = () => {
+    getActiveQuickSubjectsList().forEach(s => { state.prefs.subjectEnabled[s] = true; });
+    save();
+    renderQuickSubjectList();
+  };
+}
+
+const btnUncheckAllSubjs = $('btnUncheckAllSubjs');
+if (btnUncheckAllSubjs) {
+  btnUncheckAllSubjs.onclick = () => {
+    getActiveQuickSubjectsList().forEach(s => { state.prefs.subjectEnabled[s] = false; });
+    save();
+    renderQuickSubjectList();
+  };
 }
 
 const quickGroupSelect = $('quickGroupSelect');
@@ -1680,20 +1786,24 @@ function buildOfficialScheduleEvents(courseType, checkedSubjs) {
     });
   } else if (courseType === 'exams_2' || courseType === 'exams_1') {
     const targetCourse = courseType === 'exams_2' ? 2 : 1;
+    const convoFilter = $('quickExamConvoSelect') ? $('quickExamConvoSelect').value : 'ordinaria';
+    const noteTag = targetCourse === 1 ? 'Convocatoria oficial UCLM (1º Curso)' : 'Convocatoria oficial UCLM (2º Curso)';
     return data.exams.filter(e => {
       if (e.course !== targetCourse) return false;
+      if (convoFilter !== 'all' && e.convocatoria && e.convocatoria !== convoFilter) return false;
       return checkedSubjs.has(e.subject);
     }).map(e => {
       const [st, et] = e.time.split('-');
+      const isExt = e.convocatoria === 'extraordinaria';
       return {
         id: crypto.randomUUID(),
-        title: `Examen: ${e.subject}`,
+        title: `Examen${isExt ? ' (Ext.)' : ''}: ${e.subject}`,
         subject: e.subject,
         cal: 'exam',
         date: e.date,
         start: st,
         end: et,
-        notes: 'Convocatoria oficial UCLM'
+        notes: `${noteTag}${e.aula ? ' • ' + e.aula : ''}`
       };
     });
   }
@@ -1763,7 +1873,10 @@ if (btnApplyOfficial) {
           deleteIds = existingUni.map(e => e.id);
         }
       } else {
-        const existingExams = state.events.filter(e => e.cal === 'exam' && e.notes === 'Convocatoria oficial UCLM');
+        const courseTag = courseType === 'exams_1' ? '(1º Curso)' : '(2º Curso)';
+        const existingExams = state.events.filter(e =>
+          e.cal === 'exam' && e.notes && (e.notes.includes(courseTag) || e.notes === 'Convocatoria oficial UCLM')
+        );
         if (existingExams.length > 0) {
           deleteIds = existingExams.map(e => e.id);
         }
@@ -1771,7 +1884,7 @@ if (btnApplyOfficial) {
 
       importDlg.close();
       await batchSyncEvents(deleteIds, itemsToAdd);
-      alert(`¡Horario oficial cargado en 1 toque! Se han sincronizado ${itemsToAdd.length} clases y prácticas verificadas.`);
+      alert(`¡Listo en 1 toque! Se han añadido ${itemsToAdd.length} citas verificadas a tu agenda.`);
     } finally {
       btnApplyOfficial.disabled = false;
       btnApplyOfficial.textContent = oldBtnText;
