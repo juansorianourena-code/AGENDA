@@ -8,24 +8,54 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="wrap">
-    <header>
-      <p class="date" id="date"></p>
-      <h1>Hoy</h1>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="sub" id="sub"></p>
+        <h1 id="title"></h1>
+      </div>
+      <button class="add" id="addBtn" aria-label="Añadir evento">+</button>
     </header>
 
-    <section class="card">
-      <h2>Tu agenda está en marcha</h2>
-      <p>Esta es la primera versión. Poco a poco irá apareciendo aquí todo lo que tienes que hacer.</p>
-    </section>
+    <nav class="bar">
+      <div class="tabs" id="tabs">
+        <button data-view="day">Día</button>
+        <button data-view="week">Semana</button>
+        <button data-view="month">Mes</button>
+        <button data-view="year">Año</button>
+      </div>
+      <div class="nav">
+        <button id="prev" aria-label="Anterior">‹</button>
+        <button id="today">Hoy</button>
+        <button id="next" aria-label="Siguiente">›</button>
+      </div>
+    </nav>
 
-    <section class="legend" aria-label="Calendarios">
-      <span><i style="background:var(--navy)"></i>Universidad</span>
-      <span><i style="background:var(--olive)"></i>JMV</span>
-      <span><i style="background:var(--ink)"></i>Exámenes</span>
-      <span><i style="background:var(--sand)"></i>Catequesis</span>
-    </section>
-  </main>
+    <section class="legend" id="legend" aria-label="Calendarios"></section>
+    <main id="view"></main>
+    <p class="note">Por ahora los datos se guardan solo en este dispositivo. La sincronización entre dispositivos llega en el siguiente paso.</p>
+  </div>
+
+  <dialog id="dlg">
+    <form method="dialog" id="form">
+      <h2 id="dlgTitle">Nuevo evento</h2>
+      <label>Título <input name="title" required autocomplete="off"></label>
+      <label>Calendario <select name="cal"></select></label>
+      <label>Fecha <input type="date" name="date" required></label>
+      <div class="row">
+        <label>Inicio <input type="time" name="start"></label>
+        <label>Fin <input type="time" name="end"></label>
+      </div>
+      <label>Notas <textarea name="notes" rows="2"></textarea></label>
+      <div class="actions">
+        <button type="button" id="del" class="ghost">Eliminar</button>
+        <span class="grow"></span>
+        <button type="button" id="cancel" class="ghost">Cancelar</button>
+        <button type="submit" class="primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="app.js"></script>
 </body>
 </html>
